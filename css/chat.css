@@ -13,6 +13,8 @@
   border: 1px solid var(--chat-rule);
   background: rgba(255, 255, 255, 0.04);
   color: var(--chat-ink);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
 }
 
 .chat-head {
@@ -51,6 +53,7 @@
   color: var(--chat-ink);
   padding: 7px 12px;
   cursor: pointer;
+  border-radius: var(--radius-md);
 }
 
 .chat-channel[aria-pressed="true"] {
@@ -99,6 +102,7 @@
   border: 1px solid var(--chat-rule);
   background: #111113;
   max-width: 42rem;
+  border-radius: var(--radius-lg);
 }
 
 .chat-msg.is-mine {
@@ -151,6 +155,7 @@
   border: 1px solid var(--chat-rule);
   color: var(--chat-ink);
   padding: 10px 12px;
+  border-radius: var(--radius-md);
 }
 
 .chat-composer input::placeholder {
@@ -169,6 +174,7 @@
   padding: 10px 16px;
   cursor: pointer;
   letter-spacing: 0.02em;
+  border-radius: var(--radius-md);
 }
 
 .chat-send:hover {

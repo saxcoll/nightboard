@@ -4,6 +4,7 @@ import { getTeamPulse, mountGithubBot } from "./github.js";
 import { initJoins, paintJoinPanel, paintInbound, paintTeamActions } from "./joins.js";
 import { mountOps } from "./ops.js";
 import { mountPizza } from "./pizza.js";
+import { initPrizes, paintPrizeBanner, paintPrizePanel } from "./prizes.js";
 
 const tz = event.timezone;
 let selectedId = youAre || teams[0]?.id;
@@ -15,15 +16,6 @@ function fmtTime(iso) {
     minute: "2-digit",
     timeZone: tz,
   }).format(new Date(iso));
-}
-
-function fmtClock(date) {
-  return new Intl.DateTimeFormat("en-CA", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZone: tz,
-  }).format(date);
 }
 
 function minutesBetween(a, b) {
@@ -208,6 +200,7 @@ function selectTeam(id) {
     </div>
   `;
   paintTeamActions(document.getElementById("panel-body"), team);
+  paintPrizeBanner(document.getElementById("panel-body"), team);
 }
 
 function renderHackathon() {
@@ -237,6 +230,7 @@ function renderHackathon() {
     const line = document.createElement("p");
     line.textContent = mine.oneLiner;
     card.append(kicker, title, meta, line, chips);
+    paintPrizeBanner(card, mine);
     paintInbound(card, mine.id);
     body.append(card);
   }
@@ -293,6 +287,7 @@ function teamCard(team) {
     chips.append(span);
   }
   card.append(head, chips);
+  paintPrizeBanner(card, team);
   paintTeamActions(card, team, { inbox: false });
   card.addEventListener("click", () => selectTeam(team.id));
   return card;
@@ -346,6 +341,8 @@ function renderPresentations() {
     note.textContent = `${mine.name} is in the volunteer pool.`;
     body.append(note);
   }
+
+  paintPrizePanel(body);
 }
 
 function renderRules() {
@@ -410,15 +407,18 @@ function setView(view) {
 function fmtElapsed(now) {
   const start = new Date(event.start).getTime();
   const ms = Math.max(0, now.getTime() - start);
-  const totalMin = Math.floor(ms / 60000);
-  const h = Math.floor(totalMin / 60);
-  const m = totalMin % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  const mm = String(m).padStart(2, "0");
+  const ss = String(s).padStart(2, "0");
+  if (h > 0) return `${String(h).padStart(2, "0")}:${mm}:${ss}`;
+  return `${mm}:${ss}`;
 }
 
 function tick() {
   const now = new Date();
-  document.getElementById("clock").textContent = fmtClock(now);
   const elapsed = document.getElementById("elapsed");
   if (elapsed) elapsed.textContent = fmtElapsed(now);
   renderNow(now);
@@ -464,16 +464,24 @@ function onJoins() {
   if (selectedId) selectTeam(selectedId);
 }
 
+function onPayouts() {
+  renderHackathon();
+  renderPresentations();
+  if (selectedId) selectTeam(selectedId);
+}
+
 document.getElementById("event-title").textContent = `${event.name} — ${event.month}`;
 document.getElementById("venue").textContent = `${event.venue} · ${event.address}`;
 document.getElementById("hub-label").textContent = "teams · pool in the room";
 
 initJoins({ teams, people, youAre, hub });
+initPrizes({ teams, youAre });
 paintHub();
 
 window.addEventListener("nightboard:pizza", onPizza);
 window.addEventListener("nightboard:github", onGithub);
 window.addEventListener("nightboard:joins", onJoins);
+window.addEventListener("nightboard:payouts", onPayouts);
 
 mountOps(document.getElementById("ops-root"), { announcements, people, teams, demoQueue });
 mountPizza(document.getElementById("view-pizza"), pizza);

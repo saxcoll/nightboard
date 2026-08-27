@@ -54,6 +54,7 @@ export const rules = [
   "Presentations: volunteer your team. Three teams are picked from volunteers. One click per team.",
   "Submit a project from your team card before demos lock.",
   "Be decent. This is a meetup, not a product launch with a legal team.",
+  "Cash prizes are organizer Interac e-Transfer deposit requests. Winners confirm a receiving email — Nightboard never asks for a bank login, SIN, or card.",
 ];
 
 function m(name, role = "member") {

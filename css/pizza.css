@@ -13,6 +13,8 @@
   background: rgba(255, 255, 255, 0.04);
   color: var(--pizza-ink);
   font-family: "Instrument Sans", system-ui, sans-serif;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
 }
 
 .pizza-head {
@@ -38,6 +40,7 @@
   text-transform: uppercase;
   padding: 3px 8px;
   border: 1px solid var(--pizza-rule);
+  border-radius: var(--radius-sm);
 }
 
 .pizza-badge-sim {
@@ -64,6 +67,7 @@
   cursor: pointer;
   font: inherit;
   font-size: 13px;
+  border-radius: var(--radius-md);
 }
 
 .pizza-btn:hover:not(:disabled) {
@@ -244,6 +248,7 @@
   border: 1px solid rgba(239, 230, 212, 0.45);
   background: rgba(18, 16, 12, 0.55);
   color: var(--pizza-paper);
+  border-radius: var(--radius-sm);
 }
 
 .pizza-hud-box:nth-child(3),
@@ -287,6 +292,7 @@
   border: 1px solid rgba(239, 230, 212, 0.28);
   padding: 3px 7px;
   background: rgba(18, 16, 12, 0.55);
+  border-radius: var(--radius-sm);
 }
 
 .pizza-trays {
@@ -318,6 +324,7 @@
   height: 100%;
   min-height: 36px;
   display: block;
+  border-radius: var(--radius-sm);
 }
 
 .pizza-tray-meta {
@@ -356,6 +363,8 @@
   height: 6px;
   background: var(--pizza-paper-2);
   border: 1px solid var(--pizza-rule);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
 .pizza-bar-fill {
@@ -381,6 +390,7 @@
   font-size: 16px;
   line-height: 1;
   padding: 0;
+  border-radius: var(--radius-sm);
 }
 
 .pizza-step:hover:not(:disabled) {
@@ -404,6 +414,7 @@
   font: inherit;
   font-size: 12px;
   letter-spacing: -0.01em;
+  border-radius: var(--radius-md);
 }
 
 .pizza-order:hover:not(:disabled) {

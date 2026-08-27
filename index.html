@@ -6,6 +6,7 @@
     <title>Nightboard — Cursor Calgary</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/joins.css" />
+    <link rel="stylesheet" href="./css/prizes.css" />
   </head>
   <body>
     <div class="app">
@@ -14,10 +15,6 @@
           <p class="kicker">Nightboard · live event OS</p>
           <h1 id="event-title">Cursor Calgary Meetup</h1>
           <p class="venue" id="venue"></p>
-        </div>
-        <div class="stat">
-          <b id="clock">--:--</b>
-          <span><span class="live-dot"></span>Local time · <span id="elapsed">00:00</span> elapsed</span>
         </div>
         <div class="stat">
           <b id="present">—</b>
@@ -74,7 +71,7 @@
         <section class="panel hidden" id="view-presentations" hidden>
           <div class="panel-head">
             <strong>Presentations</strong>
-            <span>Three teams picked from volunteers</span>
+            <span>Volunteers, then prizes</span>
           </div>
           <div class="panel-body" id="presentations-body"></div>
         </section>
@@ -113,6 +110,19 @@
         <section class="mount-view hidden" id="view-chat" hidden></section>
       </div>
     </div>
+
+    <div class="elapsed" aria-live="polite" aria-atomic="true">
+      <svg class="elapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </svg>
+      <div class="elapsed-copy">
+        <span class="elapsed-time" id="elapsed">00:00</span>
+        <span class="elapsed-label">Elapsed</span>
+      </div>
+    </div>
+    <footer class="coded">Coded with Cursor</footer>
+
     <script type="module" src="./js/app.js"></script>
   </body>
 </html>

@@ -12,6 +12,8 @@
   background: rgba(255, 255, 255, 0.04);
   color: var(--gh-ink);
   font-family: "Instrument Sans", system-ui, sans-serif;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
 }
 
 .gh-head {
@@ -115,6 +117,7 @@ a.gh-repo:hover {
   border: 1px solid var(--gh-rule);
   padding: 1px 6px;
   color: var(--gh-amber);
+  border-radius: var(--radius-sm);
 }
 
 .gh-pct {
@@ -129,6 +132,8 @@ a.gh-repo:hover {
   margin: 8px 0 8px;
   background: var(--gh-paper-2);
   border: 1px solid var(--gh-rule);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
 .gh-bar i {

@@ -1,0 +1,192 @@
+/* Organizer prize payouts — dark glass, nested under Presentations. */
+
+.prize-panel {
+  margin-top: 22px;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-xl);
+}
+
+.prize-kicker {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted, #9a9388);
+  margin: 0 0 8px;
+}
+
+.prize-title {
+  margin: 0 0 8px;
+  letter-spacing: -0.03em;
+  font-size: 22px;
+  font-weight: 650;
+}
+
+.prize-blurb {
+  margin: 0 0 16px;
+  color: var(--muted, #9a9388);
+  font-size: 13px;
+  line-height: 1.45;
+  max-width: 62ch;
+}
+
+.prize-slots {
+  display: grid;
+  gap: 10px;
+}
+
+.prize-slot {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr) auto;
+  gap: 12px 14px;
+  align-items: start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+}
+
+.prize-slot:last-child {
+  border-bottom: 0;
+}
+
+.prize-rank .prize-kicker {
+  margin-bottom: 6px;
+  color: var(--amber-glow, #f0a35a);
+}
+
+.prize-amount {
+  width: 100%;
+  background: #0b0b0d;
+  border: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+  color: var(--ink, #f4f1ea);
+  padding: 8px 10px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  border-radius: var(--radius-md);
+}
+
+.prize-cad {
+  display: block;
+  margin-top: 4px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted, #9a9388);
+}
+
+.prize-select,
+.prize-email {
+  width: 100%;
+  background: #0b0b0d;
+  border: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+  color: var(--ink, #f4f1ea);
+  padding: 8px 10px;
+  font: inherit;
+  border-radius: var(--radius-md);
+}
+
+.prize-mail {
+  margin: 6px 0 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--muted, #9a9388);
+  word-break: break-all;
+}
+
+.prize-slot-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.prize-status {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted, #9a9388);
+}
+
+.prize-status.is-queued {
+  color: var(--muted, #9a9388);
+}
+
+.prize-status.is-sent {
+  color: var(--demo, #6ea8ff);
+}
+
+.prize-status.is-awaiting {
+  color: var(--amber-glow, #f0a35a);
+}
+
+.prize-status.is-confirmed {
+  color: var(--live, #3dbe6e);
+}
+
+.prize-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.prize-log-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+}
+
+.prize-log-row:last-child {
+  border-bottom: 0;
+}
+
+.prize-log-row strong {
+  display: block;
+  letter-spacing: -0.02em;
+}
+
+.prize-banner {
+  margin: 0 0 12px;
+  padding: 12px;
+  border: 1px solid rgba(240, 163, 90, 0.35);
+  background: rgba(196, 92, 18, 0.12);
+  cursor: default;
+  border-radius: var(--radius-lg);
+}
+
+.team-card-mine .prize-banner,
+.team-card.is-mine .prize-banner {
+  background: rgba(196, 92, 18, 0.16);
+}
+
+.prize-banner strong {
+  display: block;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.prize-confirm-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (max-width: 720px) {
+  .prize-slot,
+  .prize-log-row,
+  .prize-confirm-row {
+    grid-template-columns: 1fr;
+  }
+
+  .prize-slot-actions {
+    align-items: stretch;
+  }
+}
