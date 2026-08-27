@@ -2,8 +2,8 @@
 
 :root {
   --ink: #f4f1ea;
-  --paper: #09090b;
-  --paper-2: #141416;
+  --paper: #05060a;
+  --paper-2: #0c0d12;
   --rule: rgba(244, 241, 234, 0.12);
   --amber: #c45c12;
   --amber-glow: #f0a35a;
@@ -26,11 +26,32 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
-    var(--paper);
+  background: var(--paper);
   color: var(--ink);
   font-family: "Instrument Sans", system-ui, sans-serif;
+}
+
+.sky,
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.starfield {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 65% at 50% 38%, transparent 42%, rgba(5, 6, 10, 0.55) 100%),
+    linear-gradient(180deg, rgba(5, 6, 10, 0.22) 0%, transparent 22%, transparent 70%, rgba(6, 8, 16, 0.5) 100%);
 }
 
 button,
@@ -42,6 +63,8 @@ textarea {
 }
 
 .app {
+  position: relative;
+  z-index: 1;
   max-width: 1280px;
   margin: 0 auto;
   padding: 28px 22px 80px;
@@ -80,7 +103,9 @@ h1 {
 
 .stat {
   border: 1px solid var(--rule);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(10, 11, 16, 0.74);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   padding: 14px 16px;
   min-height: 92px;
   border-radius: var(--radius-lg);
@@ -100,47 +125,56 @@ h1 {
 
 .elapsed {
   position: fixed;
-  left: 16px;
-  bottom: 16px;
-  z-index: 30;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  z-index: 50;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 14px 8px 12px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  gap: 12px;
+  padding: 12px 18px 12px 14px;
+  border-radius: 999px;
+  background: rgba(20, 20, 22, 0.92);
+  border: 1px solid rgba(244, 241, 234, 0.32);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
   color: var(--ink);
   pointer-events: none;
 }
 
 .elapsed-icon {
   flex: 0 0 auto;
-  opacity: 0.72;
+  width: 20px;
+  height: 20px;
+  color: var(--amber-glow);
+  opacity: 1;
 }
 
 .elapsed-copy {
   display: flex;
   flex-direction: column;
+  gap: 3px;
   line-height: 1.05;
 }
 
 .elapsed-time {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 15px;
+  font-size: 20px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  color: var(--ink);
 }
 
 .elapsed-label {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 2px;
+  color: var(--amber-glow);
+  margin-top: 0;
 }
 
 .coded {
@@ -150,7 +184,7 @@ h1 {
   bottom: 18px;
   z-index: 20;
   margin: 0;
-  padding: 0 148px;
+  padding: 0 200px;
   text-align: center;
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 10px;
@@ -172,15 +206,17 @@ h1 {
   padding: 18px 20px;
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .now-card {
-  background: #111113;
+  background: rgba(14, 15, 20, 0.82);
   color: var(--ink);
 }
 
 .next-card {
-  background: transparent;
+  background: rgba(8, 9, 14, 0.52);
 }
 
 .now-card .kicker {
@@ -258,13 +294,15 @@ h1 {
 .floor-wrap,
 .panel {
   border: 1px solid var(--rule);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(10, 11, 16, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   min-height: 520px;
   border-radius: var(--radius-xl);
 }
 
 .floor-wrap {
-  background: #0b0c10;
+  background: rgba(9, 10, 14, 0.88);
   border-color: rgba(255, 255, 255, 0.1);
   color: #ece7dc;
 }
@@ -621,7 +659,13 @@ a {
 
 @media (max-width: 640px) {
   .elapsed {
-    bottom: 40px;
+    left: max(12px, env(safe-area-inset-left, 0px));
+    bottom: max(44px, calc(env(safe-area-inset-bottom, 0px) + 34px));
+    padding: 10px 16px 10px 12px;
+  }
+
+  .elapsed-time {
+    font-size: 18px;
   }
 
   .coded {

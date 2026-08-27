@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="./css/prizes.css" />
   </head>
   <body>
+    <div class="sky" aria-hidden="true">
+      <canvas id="starfield" class="starfield"></canvas>
+    </div>
     <div class="app">
       <header class="top">
         <div>
@@ -111,8 +114,8 @@
       </div>
     </div>
 
-    <div class="elapsed" aria-live="polite" aria-atomic="true">
-      <svg class="elapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <div class="elapsed" role="timer" aria-live="polite" aria-atomic="true" aria-label="Time elapsed since event start">
+      <svg class="elapsed-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
         <path d="M12 7v5l3 2" />
       </svg>
@@ -123,6 +126,7 @@
     </div>
     <footer class="coded">Coded with Cursor</footer>
 
+    <script type="module" src="./js/stars.js"></script>
     <script type="module" src="./js/app.js"></script>
   </body>
 </html>
