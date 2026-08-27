@@ -1,0 +1,243 @@
+/*
+  Live-ops rail for Nightboard.
+  Projector mode: toggle class `projector` on document.body.
+  Hide chrome on the wall display with [data-hide-on-projector] on any element.
+*/
+
+.ops {
+  --ops-ink: #f4f1ea;
+  --ops-paper: #09090b;
+  --ops-paper-2: #141416;
+  --ops-rule: rgba(244, 241, 234, 0.12);
+  --ops-need: #e05a4a;
+  --ops-muted: #9a9388;
+  color: var(--ops-ink);
+  background: #0c0c0e;
+  border: 1px solid var(--ops-rule);
+}
+
+.ops-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ops-rule);
+  background: #050506;
+  color: #f4f1ea;
+}
+
+.ops-ticker {
+  min-width: 0;
+}
+
+.ops-kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  color: var(--ops-muted);
+}
+
+.ops-bar .ops-kicker {
+  color: #f0a35a;
+  margin-bottom: 4px;
+}
+
+.ops-ticker-text {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.ops-btn {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  padding: 8px 12px;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 0.02em;
+}
+
+.ops-bar .ops-btn {
+  border-color: #f4f1ea;
+  color: #f4f1ea;
+}
+
+.ops-bar .ops-btn[aria-pressed="true"] {
+  background: #f4f1ea;
+  color: #09090b;
+}
+
+.ops-btn-ink {
+  background: #f4f1ea;
+  color: #09090b;
+  border-color: #f4f1ea;
+}
+
+.ops-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ops-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.ops-panel + .ops-panel {
+  border-left: 1px solid var(--ops-rule);
+}
+
+.ops-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ops-rule);
+}
+
+.ops-panel-body {
+  padding: 10px 14px 14px;
+}
+
+.ops-muted {
+  color: var(--ops-muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+.ops-empty {
+  margin: 8px 0;
+  color: var(--ops-muted);
+}
+
+.ops-need {
+  border-bottom: 1px solid var(--ops-rule);
+  padding: 10px 0;
+}
+
+.ops-need:last-child {
+  border-bottom: 0;
+}
+
+.ops-need-meta {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.ops-table {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ops-need-flag {
+  font-size: 12px;
+  color: var(--ops-need);
+}
+
+.ops-prompt {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.ops-demo-rail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ops-demo-card {
+  border: 1px solid var(--ops-rule);
+  padding: 12px;
+}
+
+.ops-demo-now {
+  background: #050506;
+  color: #f4f1ea;
+}
+
+.ops-demo-now .ops-kicker {
+  color: #f0a35a;
+}
+
+.ops-demo-now .ops-muted {
+  color: rgba(239, 230, 212, 0.7);
+}
+
+.ops-demo-name {
+  margin: 0 0 6px;
+  font-size: 20px;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.ops-demo-clock {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .ops-grid,
+  .ops-demo-rail,
+  .ops-need-meta,
+  .ops-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-panel + .ops-panel {
+    border-left: 0;
+    border-top: 1px solid var(--ops-rule);
+  }
+}
+
+/* Projector: high-contrast cream / ink, larger type, hide marked chrome. */
+body.projector {
+  background: #09090b;
+  color: #f4f1ea;
+  font-size: 22px;
+}
+
+body.projector h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+}
+
+body.projector .phase-title,
+body.projector .stat b {
+  font-size: 38px;
+}
+
+body.projector .table {
+  width: 150px;
+  font-size: 16px;
+}
+
+body.projector .ops-ticker-text {
+  font-size: 28px;
+}
+
+body.projector .ops-demo-name {
+  font-size: 32px;
+}
+
+body.projector .ops-demo-clock,
+body.projector .ops-prompt {
+  font-size: 22px;
+}
+
+body.projector [data-hide-on-projector] {
+  display: none !important;
+}

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nightboard — Cursor Calgary</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div>
+          <p class="kicker">Nightboard · live event OS</p>
+          <h1 id="event-title">Cursor Calgary Meetup</h1>
+          <p class="venue" id="venue"></p>
+        </div>
+        <div class="stat">
+          <b id="clock">--:--</b>
+          <span><span class="live-dot"></span>Local time · <span id="elapsed">00:00</span> elapsed</span>
+        </div>
+        <div class="stat">
+          <b id="present">—</b>
+          <span id="hub-label">teams · pool in the room</span>
+        </div>
+        <div class="stat">
+          <b id="pizza-count">—</b>
+          <span id="pizza-label">pizza trays · sim cam</span>
+        </div>
+      </header>
+
+      <section class="now-rail" aria-label="Now and next">
+        <div class="now-card">
+          <p class="kicker">Now</p>
+          <div class="phase-title" id="now-title">—</div>
+          <div class="time-left" id="now-meta"></div>
+        </div>
+        <div class="next-card">
+          <p class="kicker">Next</p>
+          <div class="phase-title" id="next-title">—</div>
+          <div class="time-left" id="next-meta"></div>
+        </div>
+      </section>
+
+      <div id="ops-root"></div>
+
+      <nav class="tabs" role="tablist" aria-label="Board views">
+        <button type="button" role="tab" aria-selected="true" data-view="hackathon">Hackathon</button>
+        <button type="button" role="tab" aria-selected="false" data-view="presentations">Presentations</button>
+        <button type="button" role="tab" aria-selected="false" data-view="rules">Rules</button>
+        <button type="button" role="tab" aria-selected="false" data-view="floor">Floor</button>
+        <button type="button" role="tab" aria-selected="false" data-view="pizza">Pizza cam</button>
+        <button type="button" role="tab" aria-selected="false" data-view="github">Repo bot</button>
+        <button type="button" role="tab" aria-selected="false" data-view="chat">Chat <span class="chat-tab-badge" hidden></span></button>
+      </nav>
+
+      <div class="layout">
+        <section class="panel" id="view-hackathon">
+          <div class="panel-head">
+            <strong>All teams</strong>
+            <span id="team-count">35 teams</span>
+          </div>
+          <div class="panel-body" id="hackathon-body"></div>
+        </section>
+
+        <section class="panel hidden" id="view-presentations" hidden>
+          <div class="panel-head">
+            <strong>Presentations</strong>
+            <span>Three teams picked from volunteers</span>
+          </div>
+          <div class="panel-body" id="presentations-body"></div>
+        </section>
+
+        <section class="panel hidden" id="view-rules" hidden>
+          <div class="panel-head">
+            <strong>Rules</strong>
+            <span>Tonight only</span>
+          </div>
+          <div class="panel-body" id="rules-body"></div>
+        </section>
+
+        <section class="floor-wrap hidden" id="view-floor" hidden>
+          <div class="floor-head">
+            <strong>Suite 1900</strong>
+            <span>Tap a table</span>
+          </div>
+          <div class="legend">
+            <span><i class="building"></i>building</span>
+            <span><i class="demoing"></i>demoing</span>
+            <span><i class="need"></i>needs help</span>
+          </div>
+          <div class="floor" id="floor"></div>
+        </section>
+
+        <aside class="panel hidden" id="side-panel" hidden>
+          <div class="panel-head">
+            <strong id="panel-title">Team</strong>
+            <span id="panel-sub">Pick a table</span>
+          </div>
+          <div class="panel-body" id="panel-body"></div>
+        </aside>
+
+        <section class="mount-view hidden" id="view-pizza" hidden></section>
+        <section class="mount-view hidden" id="view-github" hidden></section>
+        <section class="mount-view hidden" id="view-chat" hidden></section>
+      </div>
+    </div>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
