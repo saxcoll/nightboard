@@ -102,10 +102,6 @@ function currentTeamIdFor(person) {
   return team?.id || null;
 }
 
-function isUnattached(person) {
-  return ctx.people.some((p) => p.name === person);
-}
-
 function pending() {
   return ctx.requests.filter((r) => r.status === "pending");
 }

@@ -108,6 +108,11 @@ function packColumns(count, widthPx) {
   return Math.max(1, Math.min(n, maxByWidth, Math.max(2, target), 7));
 }
 
+function packedSeat(i) {
+  const cols = 7;
+  return `${String.fromCharCode(65 + (Math.floor(i / cols) % 26))}${(i % cols) + 1}`;
+}
+
 let floorPackerObs;
 
 function bindFloorPacker(floor, grid) {
@@ -141,10 +146,7 @@ function renderFloor() {
   teams.forEach((team, i) => {
     const pulse = getTeamPulse(team.id);
     const mine = isYourTable(team);
-    const label = team.table || (() => {
-      const cols = 7;
-      return `${String.fromCharCode(65 + (Math.floor(i / cols) % 26))}${(i % cols) + 1}`;
-    })();
+    const label = team.table || packedSeat(i);
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = mine ? "table table-mine" : "table";
