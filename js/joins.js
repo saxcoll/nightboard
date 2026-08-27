@@ -461,7 +461,7 @@ function unattachedRow(person) {
   return row;
 }
 
-export function paintTeamActions(root, team) {
+export function paintTeamActions(root, team, opts = {}) {
   if (!root || !team) return;
   const box = el("div", "join-actions");
   stopCardClick(box);
@@ -505,7 +505,7 @@ export function paintTeamActions(root, team) {
 
   root.append(box);
 
-  if (team.id === youTeamId() || team.mine) {
+  if (opts.inbox !== false && (team.id === youTeamId() || team.mine)) {
     paintInbound(root, team.id);
   }
 }

@@ -293,7 +293,7 @@ function teamCard(team) {
     chips.append(span);
   }
   card.append(head, chips);
-  paintTeamActions(card, team);
+  paintTeamActions(card, team, { inbox: false });
   card.addEventListener("click", () => selectTeam(team.id));
   return card;
 }
