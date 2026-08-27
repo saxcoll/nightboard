@@ -407,8 +407,13 @@ export function mountChat(rootEl, { teams, youAre, timezone } = {}) {
   tz = timezone || "America/Edmonton";
   you = resolveYou(teams, youAre);
   ensureStyles();
-  state = loadState(you) || { ...emptyState(), messages: seedMessages(you) };
-  if (!loadState(you)) saveState();
+  const loaded = loadState(you);
+  if (loaded) {
+    state = loaded;
+  } else {
+    state = { ...emptyState(), messages: seedMessages(you) };
+    saveState();
+  }
   renderShell();
   if (chatVisible) markRead(state.active);
   paint();

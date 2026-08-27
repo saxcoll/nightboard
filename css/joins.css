@@ -1,0 +1,133 @@
+/* Join requests / offers — dark, near-black. Scoped so floor packing stays untouched. */
+
+.join-inbox {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+}
+
+.join-inbox + .join-inbox {
+  margin-top: 8px;
+}
+
+.join-kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted, #9a9388);
+  margin: 0 0 10px;
+}
+
+.join-muted {
+  margin: 4px 0 0;
+  color: var(--muted, #9a9388);
+  font-size: 13px;
+}
+
+.join-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+}
+
+.join-row:last-child {
+  border-bottom: 0;
+}
+
+.join-row-copy strong {
+  display: block;
+  letter-spacing: -0.02em;
+}
+
+.join-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.join-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  cursor: default;
+}
+
+.team-card .join-actions,
+.team-card .join-inbox {
+  cursor: default;
+}
+
+.join-btn {
+  border: 1px solid var(--rule, rgba(244, 241, 234, 0.12));
+  background: #141416;
+  color: var(--ink, #f4f1ea);
+  padding: 7px 12px;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 0.01em;
+}
+
+.join-btn:hover:not(:disabled) {
+  border-color: rgba(244, 241, 234, 0.35);
+}
+
+.join-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.join-btn-accept {
+  background: var(--ink, #f4f1ea);
+  color: var(--paper, #09090b);
+  border-color: var(--ink, #f4f1ea);
+}
+
+.join-btn-decline {
+  background: transparent;
+}
+
+.join-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(12px);
+  z-index: 40;
+  max-width: min(90vw, 420px);
+  padding: 12px 16px;
+  background: #111113;
+  color: #f4f1ea;
+  border: 1px solid rgba(244, 241, 234, 0.18);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.join-toast[data-show="true"] {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.table .table-n {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+@media (max-width: 900px) {
+  .join-row {
+    grid-template-columns: 1fr;
+  }
+
+  .join-row-actions {
+    justify-content: flex-start;
+  }
+}

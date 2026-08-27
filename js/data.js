@@ -121,4 +121,20 @@ export const teams = [
 
 export const demoQueue = [{ teamId: "spaceflex", minutes: 4 }];
 
-export const people = [];
+/** People not on a team yet — join/offer targets. */
+export const people = [
+  {
+    id: "priya",
+    name: "Priya Shah",
+    role: "Designer",
+    skills: ["figma", "design", "copy"],
+    lookingFor: "A team that needs UI tonight.",
+  },
+  {
+    id: "omar",
+    name: "Omar Haddad",
+    role: "ML",
+    skills: ["python", "ml", "eval"],
+    lookingFor: "Open to joining a build.",
+  },
+];

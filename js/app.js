@@ -1,5 +1,7 @@
 import { announcements, demoQueue, event, hub, people, pizza, rooms, rules, schedule, teams, youAre } from "./data.js";
+import { mountChat, setChatActive } from "./chat.js";
 import { getTeamPulse, mountGithubBot } from "./github.js";
+import { initJoins, paintJoinPanel, paintInbound, paintTeamActions } from "./joins.js";
 import { mountOps } from "./ops.js";
 import { mountPizza } from "./pizza.js";
 
@@ -147,12 +149,16 @@ function renderFloor() {
     btn.type = "button";
     btn.className = mine ? "table table-mine" : "table";
     btn.dataset.teamId = team.id;
-    btn.title = mine ? `${team.name} — your table` : team.name;
+    const n = team.members.length;
+    btn.title = mine
+      ? `${team.name} — your table · ${n} ${n === 1 ? "member" : "members"}`
+      : `${team.name} · ${n} ${n === 1 ? "member" : "members"}`;
     btn.innerHTML = `
       <span class="table-top">
         <div class="meta">
           <span>${label}</span>
           ${mine ? `<span class="you-flag">you</span>` : ""}
+          <span class="table-n">${n}</span>
           <span class="status ${team.status}">${team.status}</span>
         </div>
         <strong>${team.name}</strong>
@@ -199,6 +205,7 @@ function selectTeam(id) {
       ${team.need ? `<p class="need-flag">Open seat: ${team.need}</p>` : `<p>Team is full enough to ship tonight.</p>`}
     </div>
   `;
+  paintTeamActions(document.getElementById("panel-body"), team);
 }
 
 function renderHackathon() {
@@ -228,6 +235,7 @@ function renderHackathon() {
     const line = document.createElement("p");
     line.textContent = mine.oneLiner;
     card.append(kicker, title, meta, line, chips);
+    paintInbound(card, mine.id);
     body.append(card);
   }
 
@@ -283,6 +291,7 @@ function teamCard(team) {
     chips.append(span);
   }
   card.append(head, chips);
+  paintTeamActions(card, team);
   card.addEventListener("click", () => selectTeam(team.id));
   return card;
 }
@@ -350,7 +359,7 @@ function renderRules() {
 }
 
 function setView(view) {
-  document.querySelectorAll('[role="tab"]').forEach((tab) => {
+  document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => {
     tab.setAttribute("aria-selected", tab.dataset.view === view ? "true" : "false");
   });
 
@@ -361,6 +370,7 @@ function setView(view) {
     floor: view === "floor",
     pizza: view === "pizza",
     github: view === "github",
+    chat: view === "chat",
   };
 
   const apply = (id, on) => {
@@ -371,14 +381,18 @@ function setView(view) {
   };
 
   apply("view-hackathon", show.hackathon);
+  apply("view-joins", show.hackathon);
   apply("view-presentations", show.presentations);
   apply("view-rules", show.rules);
   apply("view-floor", show.floor);
   apply("side-panel", show.floor);
   apply("view-pizza", show.pizza);
   apply("view-github", show.github);
+  apply("view-chat", show.chat);
+  setChatActive(show.chat);
 
-  document.querySelector(".layout").style.gridTemplateColumns = show.floor ? "" : "1fr";
+  document.querySelector(".layout").style.gridTemplateColumns =
+    show.floor || show.hackathon ? "" : "1fr";
 
   if (show.floor) {
     requestAnimationFrame(() => {
@@ -434,27 +448,46 @@ function onGithub() {
   if (selectedId) selectTeam(selectedId);
 }
 
+function paintHub() {
+  const present = document.getElementById("present");
+  if (present) present.textContent = `${hub.teams} / ${hub.pool}`;
+}
+
+function onJoins() {
+  paintHub();
+  renderHackathon();
+  renderFloor();
+  renderPresentations();
+  paintJoinPanel(document.getElementById("join-inbox-body"));
+  if (selectedId) selectTeam(selectedId);
+}
+
 document.getElementById("event-title").textContent = `${event.name} — ${event.month}`;
 document.getElementById("venue").textContent = `${event.venue} · ${event.address}`;
-document.getElementById("present").textContent = `${hub.teams} / ${hub.pool}`;
 document.getElementById("hub-label").textContent = "teams · pool in the room";
+
+initJoins({ teams, people, youAre, hub });
+paintHub();
 
 window.addEventListener("nightboard:pizza", onPizza);
 window.addEventListener("nightboard:github", onGithub);
+window.addEventListener("nightboard:joins", onJoins);
 
 mountOps(document.getElementById("ops-root"), { announcements, people, teams, demoQueue });
 mountPizza(document.getElementById("view-pizza"), pizza);
 mountGithubBot(document.getElementById("view-github"), { teams, event });
+mountChat(document.getElementById("view-chat"), { teams, youAre, timezone: event.timezone });
 
 renderFloor();
 renderHackathon();
 renderPresentations();
 renderRules();
+paintJoinPanel(document.getElementById("join-inbox-body"));
 selectTeam(selectedId);
 tick();
 setInterval(tick, 1000);
 setView("hackathon");
 
-document.querySelectorAll('[role="tab"]').forEach((tab) => {
+document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => {
   tab.addEventListener("click", () => setView(tab.dataset.view));
 });
