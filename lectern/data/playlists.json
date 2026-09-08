@@ -54,6 +54,69 @@
     "blurb": "Building deep learning from the ground up: micrograd autograd engine, makemore language model, and GPT-2 from scratch."
   },
   {
+    "id": "PLiaHhY2iBX9g6KIvZ_703G3KJXapKkNaF",
+    "channelId": "UConVfxXodg78Tzh5nNu85Ew",
+    "channelName": "Welch Labs",
+    "title": "Imaginary Numbers are Real",
+    "topics": ["math", "physics"],
+    "kind": "course",
+    "blurb": "Masterful visual series exploring the history, algebra, and geometric intuition behind complex numbers."
+  },
+  {
+    "id": "PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU",
+    "channelId": "UConVfxXodg78Tzh5nNu85Ew",
+    "channelName": "Welch Labs",
+    "title": "Neural Networks Demystified",
+    "topics": ["ml", "math", "cs"],
+    "kind": "course",
+    "blurb": "Step-by-step mathematical walkthrough of neural network architectures, forward propagation, and cost function minimization."
+  },
+  {
+    "id": "PLowKtXNTBypGqImE405J2565dvjafglHU",
+    "channelId": "UCS0N5baNlQWJCUrhCEo8WlA",
+    "channelName": "Ben Eater",
+    "title": "Building an 8-bit breadboard computer!",
+    "topics": ["cs", "engineering"],
+    "kind": "course",
+    "blurb": "Constructing a fully functional programmable 8-bit computer from fundamental logic gates on breadboards."
+  },
+  {
+    "id": "PLowKtXNTBypFbtuVMUVXNR0z1mu7dp7eH",
+    "channelId": "UCS0N5baNlQWJCUrhCEo8WlA",
+    "channelName": "Ben Eater",
+    "title": "Build a 65c02-based computer from scratch",
+    "topics": ["cs", "engineering"],
+    "kind": "course",
+    "blurb": "Designing and assembling a complete 6502 microprocessor system with RAM, ROM, and assembly firmware."
+  },
+  {
+    "id": "PLJHszsWbB6hqlw73QjgZcFh4DrkQLSCQa",
+    "channelId": "UCN8wTUlSAroLslWyf87E2pw",
+    "channelName": "eigenchris",
+    "title": "Relativity",
+    "topics": ["physics", "math"],
+    "kind": "course",
+    "blurb": "Rigorous visual exposition of special and general relativity, spacetime intervals, and Einstein field equations."
+  },
+  {
+    "id": "PLJHszsWbB6hpk5h8lSfBkVrpjsqvUGTCx",
+    "channelId": "UCN8wTUlSAroLslWyf87E2pw",
+    "channelName": "eigenchris",
+    "title": "Tensor Calculus",
+    "topics": ["math", "physics"],
+    "kind": "course",
+    "blurb": "Comprehensive lecture series covering tensor algebra, manifold coordinate transformations, and covariant derivatives."
+  },
+  {
+    "id": "PLJHszsWbB6hrkmmq57lX8BV-o-YIOFsiG",
+    "channelId": "UCN8wTUlSAroLslWyf87E2pw",
+    "channelName": "eigenchris",
+    "title": "Tensors for Beginners",
+    "topics": ["math", "physics"],
+    "kind": "course",
+    "blurb": "Gentle, mathematically solid introduction establishing intuitive foundations for index notation and dual vectors."
+  },
+  {
     "id": "PLE7DDD91010BC51F8",
     "channelId": "UCEBb1b_L6zDS3xTUrIALZOw",
     "channelName": "MIT OpenCourseWare",
@@ -72,6 +135,24 @@
     "blurb": "MIT's core algorithms course covering data structures, sorting, trees, hashing, shortest paths, and dynamic programming."
   },
   {
+    "id": "PLUl4u3cNGP63oMNUHXqIUcrkS2PivhN3k",
+    "channelId": "UCEBb1b_L6zDS3xTUrIALZOw",
+    "channelName": "MIT OpenCourseWare",
+    "title": "MIT 18.065 Matrix Methods in Data Analysis, Signal Processing, and Machine Learning",
+    "topics": ["math", "ml", "cs"],
+    "kind": "course",
+    "blurb": "Gilbert Strang's advanced linear algebra lectures focusing on SVD, PCA, deep learning, and optimization."
+  },
+  {
+    "id": "PL4C4C8A7D06566F38",
+    "channelId": "UCEBb1b_L6zDS3xTUrIALZOw",
+    "channelName": "MIT OpenCourseWare",
+    "title": "MIT 18.02 Multivariable Calculus",
+    "topics": ["math", "physics"],
+    "kind": "course",
+    "blurb": "Denis Auroux's full MIT semester course in vectors, partial derivatives, double integrals, and Stokes' theorem."
+  },
+  {
     "id": "PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU",
     "channelId": "UCBa5G_ESCn8Yd4vw5U-gIcg",
     "channelName": "Stanford Online",
@@ -81,12 +162,156 @@
     "blurb": "Andrew Ng's flagship Stanford graduate course in supervised learning, SVMs, kernels, deep learning, and reinforcement learning."
   },
   {
-    "id": "PLFaYLR_1aryjfB7hLrKGRaQ_GreatMinds",
+    "id": "PL3FW7Lu3i5JvHM8ljYj-zLfQRF3EO8sYv",
+    "channelId": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+    "channelName": "Stanford Online",
+    "title": "Stanford CS231n: Convolutional Neural Networks for Visual Recognition",
+    "topics": ["ml", "cs"],
+    "kind": "course",
+    "blurb": "Foundational deep computer vision lectures from Fei-Fei Li, Andrej Karpathy, and Justin Johnson."
+  },
+  {
+    "id": "PLoROMvodv4rOSH4v6133s9LFPRHjEmbmJ",
+    "channelId": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+    "channelName": "Stanford Online",
+    "title": "Stanford CS224N: Natural Language Processing with Deep Learning",
+    "topics": ["ml", "cs"],
+    "kind": "course",
+    "blurb": "Stanford flagship NLP course detailing word embeddings, attention mechanisms, transformers, and large language models."
+  },
+  {
+    "id": "PLEA18FAF1AD9047B0",
+    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
+    "channelName": "YaleCourses",
+    "title": "Death with Shelly Kagan (Yale Open Courses)",
+    "topics": ["philosophy"],
+    "kind": "course",
+    "blurb": "Professor Shelly Kagan's renowned philosophical exploration of the nature of death, personal identity, and the soul."
+  },
+  {
+    "id": "PLh9mgdi4rNewfxO7LhBoz_1Mx1MaO6sw_",
+    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
+    "channelName": "YaleCourses",
+    "title": "The Making of Modern Ukraine (Timothy Snyder)",
+    "topics": ["history"],
+    "kind": "course",
+    "blurb": "Professor Timothy Snyder's comprehensive lecture series analyzing Ukrainian and East European history, statehood, and imperialism."
+  },
+  {
+    "id": "PLh9mgdi4rNezUjm7niGdUWjnL0lHSDh0U",
+    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
+    "channelName": "YaleCourses",
+    "title": "European Intellectual History since Nietzsche",
+    "topics": ["history", "philosophy"],
+    "kind": "course",
+    "blurb": "Yale survey of modern European thought covering existentialism, structuralism, psychoanalysis, and critical theory."
+  },
+  {
+    "id": "PLrbDdGg7Qy8jcDq63uO5ArrO7v2HDWwFa",
     "channelId": "UCFaYLR_1aryjfB7hLrKGRaQ",
     "channelName": "Michael Sugrue",
-    "title": "Great Minds of the Western Intellectual Tradition",
+    "title": "Athens to Rome: The Foundations of Western Civilization",
     "topics": ["philosophy", "history"],
     "kind": "lecture",
-    "blurb": "Dr. Michael Sugrue's complete university lectures spanning Plato, Aristotle, Machiavelli, Descartes, Kant, and Nietzsche."
+    "blurb": "Dr. Michael Sugrue's lectures exploring ancient Greek philosophy, Plato, Aristotle, and the Roman stoics."
+  },
+  {
+    "id": "PLrbDdGg7Qy8ixRZxYxep_14G63psTgq_v",
+    "channelId": "UCFaYLR_1aryjfB7hLrKGRaQ",
+    "channelName": "Michael Sugrue",
+    "title": "Early Modernity: The Age of Reason and Enlightenment",
+    "topics": ["philosophy", "history"],
+    "kind": "lecture",
+    "blurb": "Dr. Michael Sugrue's analyses of Descartes, Spinoza, Leibniz, Locke, Berkeley, and Hume."
+  },
+  {
+    "id": "PLrbDdGg7Qy8hDPo125G5RKOhjvZWLEqX1",
+    "channelId": "UCFaYLR_1aryjfB7hLrKGRaQ",
+    "channelName": "Michael Sugrue",
+    "title": "The Nineteenth Century: The Age of Ideology",
+    "topics": ["philosophy", "history"],
+    "kind": "lecture",
+    "blurb": "Dr. Michael Sugrue's philosophical lectures on Kant, Hegel, Marx, Kierkegaard, and Nietzsche."
+  },
+  {
+    "id": "PL7YPshZMeLIazts4sq6UQ2kpjsUxhHaBd",
+    "channelId": "UC_hukbByJP7OZ3Xm2tszacQ",
+    "channelName": "Jeffrey Kaplan",
+    "title": "Introduction to Ethics",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Classroom lectures exploring utilitarianism, Kantian deontology, ethical relativism, and moral skepticism."
+  },
+  {
+    "id": "PL7YPshZMeLIadKr3VjnKWbttWsvEGQU-_",
+    "channelId": "UC_hukbByJP7OZ3Xm2tszacQ",
+    "channelName": "Jeffrey Kaplan",
+    "title": "Descartes' Meditations",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Rigorous step-by-step reading and commentary through René Descartes' Meditations on First Philosophy."
+  },
+  {
+    "id": "PLODnBH8kenOoFr6nfZg0Ohrax2pOFF8dL",
+    "channelId": "UCv_vLHiWVBh_FR9vbeuiY-A",
+    "channelName": "Historia Civilis",
+    "title": "Roman Politics 101",
+    "topics": ["history"],
+    "kind": "visual-explainer",
+    "blurb": "Detailed animated breakdowns of the Roman constitution, magistrates, the Senate, and procedural politics."
+  },
+  {
+    "id": "PLODnBH8kenOoLUW8BmHhX55I-qexvyU32",
+    "channelId": "UCv_vLHiWVBh_FR9vbeuiY-A",
+    "channelName": "Historia Civilis",
+    "title": "The Life of Julius Caesar",
+    "topics": ["history"],
+    "kind": "visual-explainer",
+    "blurb": "Comprehensive strategic and political chronology covering Julius Caesar from the consulship through the Ides of March."
+  },
+  {
+    "id": "PLR7yrLMHm11X6-M_usCj5H-gdstyWNLXQ",
+    "channelId": "UCT6Y5JJPKe_JDMivpKgVXew",
+    "channelName": "Fall of Civilizations",
+    "title": "Fall of Civilizations Complete Series",
+    "topics": ["history"],
+    "kind": "long-conversation",
+    "blurb": "Deeply researched documentary chronicles detailing the rise and collapse of Bronze Age, Roman, and pre-Columbian societies."
+  },
+  {
+    "id": "PL6rx9p3tbsMuzMea5pSGb2JvQfe42eYYS",
+    "channelId": "UCdp4_l1vPmpN-gDbUwhaRUQ",
+    "channelName": "Branch Education",
+    "title": "How Are Microchips Made?",
+    "topics": ["engineering", "cs"],
+    "kind": "visual-explainer",
+    "blurb": "Photorealistic 3D animations explaining silicon wafer manufacturing, photolithography, and transistor fabrication."
+  },
+  {
+    "id": "PL6rx9p3tbsMuk0jnC-dBdwb32Z1g7mD0j",
+    "channelId": "UCdp4_l1vPmpN-gDbUwhaRUQ",
+    "channelName": "Branch Education",
+    "title": "Exploring Solid State Drives and 3D NAND",
+    "topics": ["engineering", "cs"],
+    "kind": "visual-explainer",
+    "blurb": "Detailed internal visualizations of floating-gate transistors, charge-trap flash, and SSD controllers."
+  },
+  {
+    "id": "PLpXOY-RxVRTMx2C245SHOzo-OgeF7zSzh",
+    "channelId": "UCK8XIGR5kRidIw2fWqwyHRA",
+    "channelName": "Reducible",
+    "title": "Computer Graphics and Geometry",
+    "topics": ["cs", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Clear geometric algorithms for Bézier curves, ray tracing, rasterization, and spatial indexing."
+  },
+  {
+    "id": "PLpXOY-RxVRTOR1PAtQUwoZN2tSs1ICSk7",
+    "channelId": "UCK8XIGR5kRidIw2fWqwyHRA",
+    "channelName": "Reducible",
+    "title": "Data Compression",
+    "topics": ["cs", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Visual examinations of Huffman coding, LZW, and entropy encoding algorithms."
   }
 ]
