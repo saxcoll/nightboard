@@ -1,0 +1,15 @@
+{
+  "name": "Nightboard",
+  "terminals": [
+    {
+      "name": "static-server",
+      "command": "python3 -m http.server 5173"
+    }
+  ],
+  "ports": [
+    {
+      "name": "Nightboard",
+      "port": 5173
+    }
+  ]
+}
