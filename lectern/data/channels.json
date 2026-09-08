@@ -133,11 +133,11 @@
     "blurb": "Graduate computer science courses including Andrew Ng's CS229 Machine Learning and CS231n Deep Learning."
   },
   {
-    "id": "UCK8f1CUe8y403u3b0gCINww",
-    "name": "Oxford University",
-    "topics": ["philosophy", "math", "history"],
+    "id": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "name": "Oxford Mathematics",
+    "topics": ["math", "physics"],
     "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences."
+    "blurb": "Rigorous undergraduate student lectures, research colloquia, and public lectures from the Mathematical Institute, University of Oxford."
   },
   {
     "id": "UC1t6kKXoBvjdr8m9KJ2Fx7A",

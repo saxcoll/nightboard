@@ -313,5 +313,14 @@
     "topics": ["cs", "math"],
     "kind": "visual-explainer",
     "blurb": "Visual examinations of Huffman coding, LZW, and entropy encoding algorithms."
+  },
+  {
+    "id": "PL4d5ZtfQonW0A4VHeiY0gSkX1QEraaacE",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "title": "Oxford Mathematics Student Lectures",
+    "topics": ["math", "physics"],
+    "kind": "course",
+    "blurb": "Curated undergraduate student lectures from Oxford's Mathematical Institute spanning calculus, linear algebra, analysis, and relativity."
   }
 ]

@@ -1,105 +1,363 @@
 [
   {
-    "id": "IDOldtdCTJc",
-    "title": "Recording the past for the future",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-09-07T10:12:53+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/IDOldtdCTJc/hqdefault.jpg",
+    "id": "aS6R3epK3ms",
+    "title": "Introduction to University Mathematics: Lecture 1 - Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-10-19T14:40:58Z",
+    "durationSec": 2868,
+    "thumbnail": "https://i.ytimg.com/vi/aS6R3epK3ms/hqdefault.jpg",
     "topics": [
-      "philosophy",
+      "math"
+    ],
+    "kind": "course",
+    "blurb": "First-year Oxford mathematics degree course introducing sets, logic, and rigorous mathematical proof.",
+    "url": "https://www.youtube.com/watch?v=aS6R3epK3ms"
+  },
+  {
+    "id": "81jxfxLg9tg",
+    "title": "Introduction to Complex Numbers: Lecture 1 - Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2024-12-01T16:31:54Z",
+    "durationSec": 2766,
+    "thumbnail": "https://i.ytimg.com/vi/81jxfxLg9tg/hqdefault.jpg",
+    "topics": [
+      "math"
+    ],
+    "kind": "course",
+    "blurb": "First-year Oxford lecture covering foundational complex numbers, the complex plane, and algebraic properties.",
+    "url": "https://www.youtube.com/watch?v=81jxfxLg9tg"
+  },
+  {
+    "id": "Bjnj8-HMjIA",
+    "title": "Multivariable Calculus Lecture 1 - Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-01-20T10:00:00Z",
+    "durationSec": 3090,
+    "thumbnail": "https://i.ytimg.com/vi/Bjnj8-HMjIA/hqdefault.jpg",
+    "topics": [
+      "math"
+    ],
+    "kind": "course",
+    "blurb": "First-year Oxford lecture extending single-variable calculus to multiple dimensions, partial derivatives, and multiple integrals in 2D.",
+    "url": "https://www.youtube.com/watch?v=Bjnj8-HMjIA"
+  },
+  {
+    "id": "100Im_72xl4",
+    "title": "Linear Algebra II - Eigenvectors & eigenvalues: Oxford Maths 1st Year Student Lecture, James Maynard",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2021-03-30T10:17:17Z",
+    "durationSec": 2536,
+    "thumbnail": "https://i.ytimg.com/vi/100Im_72xl4/hqdefault.jpg",
+    "topics": [
+      "math"
+    ],
+    "kind": "course",
+    "blurb": "Fields Medalist James Maynard lectures on eigenvectors, eigenvalues, and linear transformations.",
+    "url": "https://www.youtube.com/watch?v=100Im_72xl4"
+  },
+  {
+    "id": "Yj0rMy6MBMk",
+    "title": "Linear Algebra 1: Matrix algebra - Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2020-10-20T10:00:00Z",
+    "durationSec": 2840,
+    "thumbnail": "https://i.ytimg.com/vi/Yj0rMy6MBMk/hqdefault.jpg",
+    "topics": [
+      "math"
+    ],
+    "kind": "course",
+    "blurb": "Foundations of matrix algebra, vector spaces, and linear systems from Oxford's first-year undergraduate syllabus.",
+    "url": "https://www.youtube.com/watch?v=Yj0rMy6MBMk"
+  },
+  {
+    "id": "m_5Jlquo0W4",
+    "title": "Geometry: Hyperbolic space - the hyperboloid model. Oxford Mathematics 2nd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2024-05-10T10:00:00Z",
+    "durationSec": 2700,
+    "thumbnail": "https://i.ytimg.com/vi/m_5Jlquo0W4/hqdefault.jpg",
+    "topics": [
+      "math"
+    ],
+    "kind": "course",
+    "blurb": "Second-year Oxford undergraduate geometry lecture exploring Riemannian geometry and the hyperboloid model.",
+    "url": "https://www.youtube.com/watch?v=m_5Jlquo0W4"
+  },
+  {
+    "id": "ScX2aBFyrVU",
+    "title": "Information Theory, Lecture 1: Defining Entropy and Information - Oxford Mathematics 3rd Yr Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-10-15T10:00:00Z",
+    "durationSec": 3000,
+    "thumbnail": "https://i.ytimg.com/vi/ScX2aBFyrVU/hqdefault.jpg",
+    "topics": [
       "math",
-      "history"
+      "cs"
+    ],
+    "kind": "course",
+    "blurb": "Advanced third-year Oxford lecture formalizing Shannon entropy, information divergence, and coding bounds.",
+    "url": "https://www.youtube.com/watch?v=ScX2aBFyrVU"
+  },
+  {
+    "id": "1zXC51o3EfI",
+    "title": "Spacetime Singularities - Roger Penrose, Dennis Lehmkuhl and Melvyn Bragg",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2021-11-04T18:00:00Z",
+    "durationSec": 3510,
+    "thumbnail": "https://i.ytimg.com/vi/1zXC51o3EfI/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
     ],
     "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=IDOldtdCTJc"
+    "blurb": "Nobel Laureate Sir Roger Penrose presents his singularity theorems and mathematical physics of black holes.",
+    "url": "https://www.youtube.com/watch?v=1zXC51o3EfI"
   },
   {
-    "id": "6AAJd6xMTkk",
-    "title": "Four Questions to Ask in Every Negotiation",
-    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
-    "channelName": "YaleCourses",
-    "publishedAt": "2026-09-01T19:07:02+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/6AAJd6xMTkk/hqdefault.jpg",
+    "id": "uQgcpzKA5jk",
+    "title": "Oxford Mathematics London Public Lecture: Andrew Wiles in Conversation with Hannah Fry",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2020-02-12T18:00:00Z",
+    "durationSec": 3300,
+    "thumbnail": "https://i.ytimg.com/vi/uQgcpzKA5jk/hqdefault.jpg",
     "topics": [
-      "philosophy",
-      "history",
-      "physics"
-    ],
-    "kind": "course",
-    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History.",
-    "url": "https://www.youtube.com/watch?v=6AAJd6xMTkk"
-  },
-  {
-    "id": "rCvsuYjw-FQ",
-    "title": "BATNA Explained: What Happens If You Walk Away?",
-    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
-    "channelName": "YaleCourses",
-    "publishedAt": "2026-09-01T19:04:12+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/rCvsuYjw-FQ/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "history",
-      "physics"
-    ],
-    "kind": "course",
-    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History.",
-    "url": "https://www.youtube.com/watch?v=rCvsuYjw-FQ"
-  },
-  {
-    "id": "IIOjdnW768k",
-    "title": "The Negotiation Study Everyone Gets Wrong",
-    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
-    "channelName": "YaleCourses",
-    "publishedAt": "2026-09-01T18:59:27+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/IIOjdnW768k/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "history",
-      "physics"
-    ],
-    "kind": "course",
-    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History.",
-    "url": "https://www.youtube.com/watch?v=IIOjdnW768k"
-  },
-  {
-    "id": "gI2oeBw5njc",
-    "title": "Why Paying More Can Feel Like a Better Deal",
-    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
-    "channelName": "YaleCourses",
-    "publishedAt": "2026-09-01T18:54:24+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/gI2oeBw5njc/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "history",
-      "physics"
-    ],
-    "kind": "course",
-    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History.",
-    "url": "https://www.youtube.com/watch?v=gI2oeBw5njc"
-  },
-  {
-    "id": "fuIKLWPa25w",
-    "title": "The history of libraries",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-09-01T14:26:22+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/fuIKLWPa25w/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
+      "math"
     ],
     "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=fuIKLWPa25w"
+    "blurb": "Sir Andrew Wiles discusses elliptic curves, Fermat's Last Theorem, and pure mathematical research with Hannah Fry.",
+    "url": "https://www.youtube.com/watch?v=uQgcpzKA5jk"
+  },
+  {
+    "id": "yq4zHsdOy54",
+    "title": "Sophie Germain and prime numbers - James Maynard",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-06-15T10:00:00Z",
+    "durationSec": 2850,
+    "thumbnail": "https://i.ytimg.com/vi/yq4zHsdOy54/hqdefault.jpg",
+    "topics": [
+      "math"
+    ],
+    "kind": "lecture",
+    "blurb": "Fields Medalist James Maynard lectures on prime numbers, Sophie Germain primes, and breakthroughs in analytic number theory.",
+    "url": "https://www.youtube.com/watch?v=yq4zHsdOy54"
+  },
+  {
+    "id": "xSDsrjw7upI",
+    "title": "Special Relativity, Lecture 1: Space, time and relativity before Einstein - 3rd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-03-01T10:00:00Z",
+    "durationSec": 2940,
+    "thumbnail": "https://i.ytimg.com/vi/xSDsrjw7upI/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Third-year mathematical physics lecture on classical spacetime manifolds, Galilean transformations, and relativity.",
+    "url": "https://www.youtube.com/watch?v=xSDsrjw7upI"
+  },
+  {
+    "id": "O4CxcoawCs8",
+    "title": "Special Relativity, Lecture 2: The Maxwell's equations - 3rd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-03-03T10:00:00Z",
+    "durationSec": 3100,
+    "thumbnail": "https://i.ytimg.com/vi/O4CxcoawCs8/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Deriving relativistic covariance from Maxwell's electromagnetic tensor equations in Minkowski space.",
+    "url": "https://www.youtube.com/watch?v=O4CxcoawCs8"
+  },
+  {
+    "id": "afBXRvWjMnA",
+    "title": "Special Relativity, Lecture 3: The Michelson-Morley Experiment - 3rd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-03-08T10:00:00Z",
+    "durationSec": 2850,
+    "thumbnail": "https://i.ytimg.com/vi/afBXRvWjMnA/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Mathematical analysis of interferometer physics and the breakdown of classical ether theories.",
+    "url": "https://www.youtube.com/watch?v=afBXRvWjMnA"
+  },
+  {
+    "id": "uw9u0r4GglY",
+    "title": "Special Relativity, Lecture 4: The postulates of Special Relativity - 3rd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-03-10T10:00:00Z",
+    "durationSec": 2980,
+    "thumbnail": "https://i.ytimg.com/vi/uw9u0r4GglY/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Rigorous axiomatic formulation of Einstein's postulates and the Poincaré group.",
+    "url": "https://www.youtube.com/watch?v=uw9u0r4GglY"
+  },
+  {
+    "id": "-Te1fUF6hvc",
+    "title": "Special Relativity, Lecture 5: What do we mean by space and time? - 3rd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-03-15T10:00:00Z",
+    "durationSec": 3050,
+    "thumbnail": "https://i.ytimg.com/vi/-Te1fUF6hvc/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Spacetime geometry, interval invariance, lightcones, and proper time formulation.",
+    "url": "https://www.youtube.com/watch?v=-Te1fUF6hvc"
+  },
+  {
+    "id": "1OOeOndFJkY",
+    "title": "Special Relativity, Lecture 6: The Twin Paradox - 3rd Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2022-03-17T10:00:00Z",
+    "durationSec": 3120,
+    "thumbnail": "https://i.ytimg.com/vi/1OOeOndFJkY/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Resolution of the Twin Paradox using worldlines, geodesic deviation, and accelerated frames in Minkowski geometry.",
+    "url": "https://www.youtube.com/watch?v=1OOeOndFJkY"
+  },
+  {
+    "id": "uyhm8chmf6E",
+    "title": "Dynamics, Lectures 1 & 2: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-02-01T10:00:00Z",
+    "durationSec": 3200,
+    "thumbnail": "https://i.ytimg.com/vi/uyhm8chmf6E/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "First-year Oxford mathematics course introducing Newtonian mechanics, phase space, and dynamical systems.",
+    "url": "https://www.youtube.com/watch?v=uyhm8chmf6E"
+  },
+  {
+    "id": "oOZ-I9OBv9g",
+    "title": "Dynamics, Lectures 3 & 4: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-02-08T10:00:00Z",
+    "durationSec": 3150,
+    "thumbnail": "https://i.ytimg.com/vi/oOZ-I9OBv9g/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Conservative forces, potential energy surfaces, and oscillatory motion in one and two dimensions.",
+    "url": "https://www.youtube.com/watch?v=oOZ-I9OBv9g"
+  },
+  {
+    "id": "TX5vb-BpvBs",
+    "title": "Dynamics, Lectures 7 & 8: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-02-22T10:00:00Z",
+    "durationSec": 3080,
+    "thumbnail": "https://i.ytimg.com/vi/TX5vb-BpvBs/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Orbital mechanics, central forces, Kepler's laws, and gravitational potential.",
+    "url": "https://www.youtube.com/watch?v=TX5vb-BpvBs"
+  },
+  {
+    "id": "mCwv2_QBh7M",
+    "title": "Dynamics, Lectures 9 & 10: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-03-01T10:00:00Z",
+    "durationSec": 3140,
+    "thumbnail": "https://i.ytimg.com/vi/mCwv2_QBh7M/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Rotating reference frames, Coriolis acceleration, centrifugal forces, and motion on the rotating Earth.",
+    "url": "https://www.youtube.com/watch?v=mCwv2_QBh7M"
+  },
+  {
+    "id": "YHZCo1gb_7E",
+    "title": "Dynamics, Lectures 11 & 12: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-03-08T10:00:00Z",
+    "durationSec": 3220,
+    "thumbnail": "https://i.ytimg.com/vi/YHZCo1gb_7E/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Rigid body motion, moments of inertia, angular momentum, and Euler's equations.",
+    "url": "https://www.youtube.com/watch?v=YHZCo1gb_7E"
+  },
+  {
+    "id": "GXygFTxrAGE",
+    "title": "Dynamics, Lectures 13 & 14: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-03-15T10:00:00Z",
+    "durationSec": 3180,
+    "thumbnail": "https://i.ytimg.com/vi/GXygFTxrAGE/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Principle of least action, generalized coordinates, Lagrangian mechanics, and variational calculus.",
+    "url": "https://www.youtube.com/watch?v=GXygFTxrAGE"
+  },
+  {
+    "id": "ridNG_BytkY",
+    "title": "Dynamics, Lectures 15 & 16: Oxford Mathematics 1st Year Student Lecture",
+    "channelId": "UCLnGGRG__uGSPLBLzyhg8dQ",
+    "channelName": "Oxford Mathematics",
+    "publishedAt": "2023-03-22T10:00:00Z",
+    "durationSec": 3250,
+    "thumbnail": "https://i.ytimg.com/vi/ridNG_BytkY/hqdefault.jpg",
+    "topics": [
+      "math",
+      "physics"
+    ],
+    "kind": "course",
+    "blurb": "Hamiltonian mechanics, phase portraits, conservation laws, and symplectic geometry basics.",
+    "url": "https://www.youtube.com/watch?v=ridNG_BytkY"
   },
   {
     "id": "R8swv0V5BOQ",
@@ -116,74 +374,6 @@
     "kind": "visual-explainer",
     "blurb": "Intricate experimental physics apparatuses demonstrating fluid dynamics, non-Newtonian effects, and acoustic phenomena.",
     "url": "https://www.youtube.com/watch?v=R8swv0V5BOQ"
-  },
-  {
-    "id": "K69GiB3b3Z8",
-    "title": "Oxford Graduates: What We'll Miss Most",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-25T12:28:45+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/K69GiB3b3Z8/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=K69GiB3b3Z8"
-  },
-  {
-    "id": "EVT7A_RYLKo",
-    "title": "The History of Libraries",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-22T12:45:31+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/EVT7A_RYLKo/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=EVT7A_RYLKo"
-  },
-  {
-    "id": "bIp77nLn0pE",
-    "title": "Oxford Graduates: How Does It Feel?",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-21T10:07:38+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/bIp77nLn0pE/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=bIp77nLn0pE"
-  },
-  {
-    "id": "7El2gDGwMRo",
-    "title": "The Schwarzman Centre: Behind the Build",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-20T09:35:29+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/7El2gDGwMRo/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=7El2gDGwMRo"
   },
   {
     "id": "rYyJm1tD3d0",
@@ -218,125 +408,6 @@
     "url": "https://www.youtube.com/watch?v=pg7fntKLNak"
   },
   {
-    "id": "AgytarCe3oo",
-    "title": "Asking students how it felt to get into Oxford",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-13T16:24:07+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/AgytarCe3oo/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=AgytarCe3oo"
-  },
-  {
-    "id": "J_YxZsRwULA",
-    "title": "Congratulations, Adam - we’ll see you in October. 🥹🥳📹 | @adamlovesmaths (TikTok)  #GoingToOxford",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-13T10:39:54+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/J_YxZsRwULA/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=J_YxZsRwULA"
-  },
-  {
-    "id": "00h3Q9bB4U0",
-    "title": "Congratulations to everyone who’s #GoingToOxford",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-13T08:09:40+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/00h3Q9bB4U0/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=00h3Q9bB4U0"
-  },
-  {
-    "id": "Ej2vpy_LaEI",
-    "title": "How to watch the solar eclipse safely",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-12T10:49:33+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/Ej2vpy_LaEI/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=Ej2vpy_LaEI"
-  },
-  {
-    "id": "HOS9g7sJTts",
-    "title": "Is AI amplifying global inequality ?",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-10T10:52:40+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/HOS9g7sJTts/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=HOS9g7sJTts"
-  },
-  {
-    "id": "yoYWoFVCGPE",
-    "title": "Every Oxford student needs a Bod Card…Even these two 🐈🐈‍⬛ #OxfordUniversity",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-08T08:43:23+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/yoYWoFVCGPE/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=yoYWoFVCGPE"
-  },
-  {
-    "id": "uaTTnby96_w",
-    "title": "Come and explore Modern Art Oxford",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-08-07T11:21:44+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/uaTTnby96_w/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=uaTTnby96_w"
-  },
-  {
     "id": "UiPJbxryrkU",
     "title": "Why Sagrada Familia Took 144 Years to Complete",
     "channelId": "UCR1IuLEqb6UEA_zQ81kwXfg",
@@ -365,40 +436,6 @@
     "kind": "visual-explainer",
     "blurb": "University of Nottingham professors elucidating algorithms, cryptography, compilers, and hardware fundamentals.",
     "url": "https://www.youtube.com/watch?v=cDKPbMaLTA4"
-  },
-  {
-    "id": "4rMf572m9i8",
-    "title": "What do Oxford students think of their maths friends? #oxforduniversity",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-07-30T09:45:01+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/4rMf572m9i8/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=4rMf572m9i8"
-  },
-  {
-    "id": "2GK1Y26YBh8",
-    "title": "Oxford University Graduation",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2026-07-28T13:38:37+00:00",
-    "durationSec": null,
-    "thumbnail": "https://i.ytimg.com/vi/2GK1Y26YBh8/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=2GK1Y26YBh8"
   },
   {
     "id": "6XPlmCDNLNc",
@@ -6818,40 +6855,6 @@
     "url": "https://www.youtube.com/watch?v=yVnmHSAy3ck"
   },
   {
-    "id": "VSFUfeEx4aQ",
-    "title": "Sheldonian Series: The Power of Satire",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2024-01-01T00:00:00Z",
-    "durationSec": 4556,
-    "thumbnail": "https://i.ytimg.com/vi/VSFUfeEx4aQ/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=VSFUfeEx4aQ"
-  },
-  {
-    "id": "68RdlbFMtbk",
-    "title": "Sheldonian Series: Activism",
-    "channelId": "UCK8f1CUe8y403u3b0gCINww",
-    "channelName": "Oxford University",
-    "publishedAt": "2024-01-01T00:00:00Z",
-    "durationSec": 4289,
-    "thumbnail": "https://i.ytimg.com/vi/68RdlbFMtbk/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "math",
-      "history"
-    ],
-    "kind": "lecture",
-    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences.",
-    "url": "https://www.youtube.com/watch?v=68RdlbFMtbk"
-  },
-  {
     "id": "n98aYhZnsUI",
     "title": "The Shape of Knots: From DNA to Shoestrings and Solar Flares - Alain Goriely",
     "channelId": "UC1t6kKXoBvjdr8m9KJ2Fx7A",
@@ -9745,40 +9748,6 @@
     "kind": "visual-explainer",
     "blurb": "Astonishing 3D photorealistic animations exploring semiconductor chips, memory architectures, and wireless communications.",
     "url": "https://www.youtube.com/watch?v=NKfW8ijmRQ4"
-  },
-  {
-    "id": "wbBJ72MPIyc",
-    "title": "The Psychology of Negotiation: Q&A with Barry Nalebuff and Daylian Cain",
-    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
-    "channelName": "YaleCourses",
-    "publishedAt": "2024-01-01T00:00:00Z",
-    "durationSec": 2054,
-    "thumbnail": "https://i.ytimg.com/vi/wbBJ72MPIyc/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "history",
-      "physics"
-    ],
-    "kind": "course",
-    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History.",
-    "url": "https://www.youtube.com/watch?v=wbBJ72MPIyc"
-  },
-  {
-    "id": "v0mycV8ovGQ",
-    "title": "The Secrets to College Success - FULL COURSE",
-    "channelId": "UC4EY_qnSeAP1xGsh61eOoJA",
-    "channelName": "YaleCourses",
-    "publishedAt": "2024-01-01T00:00:00Z",
-    "durationSec": 18243,
-    "thumbnail": "https://i.ytimg.com/vi/v0mycV8ovGQ/hqdefault.jpg",
-    "topics": [
-      "philosophy",
-      "history",
-      "physics"
-    ],
-    "kind": "course",
-    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History.",
-    "url": "https://www.youtube.com/watch?v=v0mycV8ovGQ"
   },
   {
     "id": "CiUgOD-LI8E",
