@@ -1,46 +1,27 @@
 # Lectern
 
-> A searchable library of lecture-grade YouTube (3Blue1Brown / Welch Labs density).
+> A searchable, lecture-grade YouTube library.
 > High-signal mathematics, theoretical computer science, physics, engineering, machine learning, philosophy, and history.
 
-Lectern is designed for students and researchers who learn best when material is rigorous, mathematically transparent, and unapologetically technical. Rather than a broad YouTube search, Lectern is an intentionally restricted canon of curated creators and university lectures.
+Lectern is designed for students, engineers, and researchers who learn best when material is rigorous, mathematically transparent, and unapologetically technical. Rather than an unconstrained YouTube search, Lectern is an intentionally restricted canon of curated creators and university lectures.
 
 ---
 
-## The Curatorial Standard
+## What Lectern Is
 
-- **Standard of Density**: 3Blue1Brown and Welch Labs level exposition — content with proofs, matrices, and formal mechanics rather than hand-waving metaphors.
-- **Topics Included**: `math`, `cs`, `physics`, `engineering`, `ml`, `philosophy`, `history`.
-- **Expositions Included**:
-  - University lecture series: MIT OpenCourseWare (Gilbert Strang, Erik Demaine), Stanford Online (Andrew Ng CS229), Harvard, Oxford, Yale Open Courses, Gresham College, Institute for Advanced Study.
-  - Deep algorithmic foundations: Andrej Karpathy (*Neural Networks: Zero to Hero*), Ben Eater (8-bit computer from scratch), Reducible, Polylog, Jon Gjengset (Rust systems internals), Tsoding.
-  - Pure mathematical foundations: Mathologer, Aleph 0, Morphocular, Primer, Mutual Information, Richard Behiel.
-  - Foundational humanities: Michael Sugrue (*Great Minds of the Western Intellectual Tradition*), Jeffrey Kaplan, Philosophy Overdose, Historia Civilis, Fall of Civilizations, Voices of the Past.
-- **Strictly Excluded**:
-  - Pop-science and superficial explainers (Kurzgesagt, Veritasium, Crash Course, Two Minute Papers, TED/TEDx).
-  - Short-form sensationalism and clickbait (#Shorts, "Top 10", "You won't believe").
-  - ALL music theory (Adam Neely, Rick Beato, 12tone, Sideways).
-  - Videos under 12 minutes are hidden by default when duration is known.
-
----
-
-## Directory Layout
-
-```
-lectern/
-  index.html            # Main academic library web interface
-  css/
-    styles.css          # Paper / chalk typography and palette
-  js/
-    app.js              # In-memory client search, filters, modals
-  data/
-    channels.json       # 62 curated canon channels with real YouTube IDs
-    playlists.json      # Curated landmark courses & exposition playlists
-    videos.json         # Rich seed catalog (1,280+ lecture-grade works)
-  README.md
-scripts/
-  lectern_ingest.py     # Channel ingest script (YouTube API + RSS fallback)
-```
+Lectern provides a curated web catalog featuring:
+- **Paper & Chalk Academic Aesthetic**: Warm ivory parchment, antique walnut ink, and lapidary typography — deliberate departure from both Nightboard starfields and standard YouTube red.
+- **In-Memory Filtering & Search**: Instant token matching across titles, channels, topics, and blurbs.
+- **Multi-Faceted Refinement**:
+  - **Topics**: `math`, `cs`, `physics`, `engineering`, `ml`, `philosophy`, `history`.
+  - **Kinds**: `visual-explainer`, `course`, `lecture`, `long-conversation`.
+  - **Duration Buckets**: `12–20 min`, `20–45 min`, `45–90 min`, `90+ min`.
+  - **Recency**: `Past Year`, `Past 3 Years`, `Archival (3+ yrs)`.
+  - **Canon Guard**: Videos under 12 minutes and YouTube Shorts are excluded by default when duration is known.
+- **Card Metadata & Direct Watch**: Each card displays thumbnail, title, channel, duration, publication date, kind, blurb, and topic tags. Clicking opens the lecture directly on YouTube in a new tab.
+- **Channel Focus**: Filter the catalog by a specific faculty member or channel, viewing the channel's curatorial blurb and institutional focus.
+- **Canon Philosophy**: If a query yields no matches, Lectern reminds you: *“This is not YouTube search; it is a canon.”*
+- **Zero Bundler / Zero Dependencies**: Built with vanilla HTML5, CSS3, and JavaScript (ES6+). Runs directly in any modern browser without npm, webpack, or build steps.
 
 ---
 
@@ -49,16 +30,18 @@ scripts/
 Run a local HTTP server from the repository root:
 
 ```bash
-python3 -m http.server 5173
+python3 -m http.server 8000
 ```
 
-Open [http://localhost:5173/lectern/](http://localhost:5173/lectern/) in your browser.
+Then open the Lectern frontend in your browser:
+
+[http://localhost:8000/lectern/](http://localhost:8000/lectern/)
 
 ---
 
 ## Ingest Job
 
-The ingest script updates `lectern/data/videos.json` from the channels specified in `lectern/data/channels.json`:
+Lectern's catalog can be refreshed or expanded from the channels specified in `lectern/data/channels.json` by running the ingest script:
 
 ```bash
 python3 scripts/lectern_ingest.py
@@ -66,20 +49,64 @@ python3 scripts/lectern_ingest.py
 
 ### With `YOUTUBE_API_KEY`:
 If the environment variable `YOUTUBE_API_KEY` is set, the script queries the YouTube Data API v3:
-1. For each channel, retrieves the channel uploads playlist (`UU...`).
-2. Pages `playlistItems` (capped at ~100 items per channel).
-3. Batches `videos.list` up to 50 items at a time (`contentDetails`, `snippet`, `statistics`).
-4. Drops items with duration `< 12:00`, Shorts, live streams, and clickbait titles.
-5. Writes the updated catalog to `lectern/data/videos.json`.
+1. For each channel, retrieves uploads via playlist items.
+2. Batches `videos.list` requests (up to 50 items) for durations, snippets, and metadata.
+3. Filters out content under 12 minutes, Shorts, livestreams, and clickbait.
+4. Outputs the enriched catalog to `lectern/data/videos.json`.
 
 ### Without `YOUTUBE_API_KEY`:
-If no API key is present:
-1. Attempts YouTube RSS feeds (`https://www.youtube.com/feeds/videos.xml?channel_id=...`).
-2. Merges entries while preserving durations from the existing seed data.
-3. If YouTube RSS 404s (an intermittent upstream YouTube condition) or network fails, the script safely keeps the committed seed `videos.json` without data loss.
+If no API key is set, the ingest script falls back to YouTube RSS feeds and safely preserves existing catalog metadata without data loss.
 
 ---
 
-## Standalone Zero-Dependency Guarantee
+## Data Schemas
 
-Lectern requires no bundler, no npm install, and no build step. The committed `videos.json` contains over 1,280 real, lecture-grade videos, allowing Lectern to work instantly out of the box on GitHub Pages or any static web host.
+Lectern defensively loads `./data/` or `../data/` JSON files and supports both raw arrays and `{ "videos": [...] }` or `{ "channels": [...] }` object formats.
+
+### Video Schema:
+```json
+{
+  "id": "aircAruvnKk",
+  "title": "Neural Networks: Zero to Hero",
+  "channelId": "UCXUPKJO5MZQN11PqgIvyuvQ",
+  "channelName": "Andrej Karpathy",
+  "publishedAt": "2022-08-16T15:00:00Z",
+  "durationSec": 8100,
+  "thumbnail": "https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg",
+  "topics": ["ml", "cs"],
+  "kind": "course",
+  "blurb": "Building deep neural networks from first principles using Python and autograd.",
+  "url": "https://www.youtube.com/watch?v=aircAruvnKk"
+}
+```
+
+### Channel Schema:
+```json
+{
+  "id": "UCYO_jab_esuFRV4b17AJtAw",
+  "name": "3Blue1Brown",
+  "topics": ["math", "cs", "ml"],
+  "kind": "visual-explainer",
+  "blurb": "Grant Sanderson's gold standard for visual mathematics, linear algebra, calculus, and neural network intuition."
+}
+```
+
+---
+
+## Directory Structure
+
+```
+lectern/
+  index.html            # Main library web interface
+  css/
+    styles.css          # Paper / chalk typography and academic layout
+  js/
+    app.js              # In-memory search, faceted filtering, defensive data loading
+  data/
+    channels.json       # Curated faculty & institutions
+    playlists.json      # Curated course series & playlists
+    videos.json         # Lecture-grade catalog
+  README.md             # This documentation
+scripts/
+  lectern_ingest.py     # Ingest script
+```

@@ -1,7 +1,7 @@
 /**
- * Lectern — Academic Library Client Application
- * Handles in-memory search, multi-faceted filtering (topic, kind, duration, channel),
- * view mode switching, and accessible modal views.
+ * Lectern — Curated Lecture-Grade YouTube Library
+ * Vanilla JavaScript application: in-memory search, multi-faceted filtering,
+ * defensive data loading, channel focus banners, and zero external dependencies.
  */
 
 (function () {
@@ -12,12 +12,15 @@
     videos: [],
     channels: [],
     playlists: [],
+    channelsMap: new Map(), // channelId -> channel object
     searchQuery: "",
     selectedTopic: "all",
     selectedKind: "all",
     selectedDuration: "all",
-    selectedChannelId: null,
+    selectedRecency: "all",
     selectedSort: "relevant",
+    selectedChannelId: null,
+    hideShortsAndUnder12m: true, // Default hide under 12 min and Shorts when duration known
     currentView: "catalog", // 'catalog' | 'channels' | 'playlists'
   };
 
@@ -27,57 +30,108 @@
   const topicChips = document.getElementById("topic-chips");
   const kindChips = document.getElementById("kind-chips");
   const durationChips = document.getElementById("duration-chips");
+  const recencyChips = document.getElementById("recency-chips");
   const sortChips = document.getElementById("sort-chips");
+  const toggleShortsGuardBtn = document.getElementById("toggle-shorts-guard");
+
   const activeQueryBar = document.getElementById("active-query-bar");
   const resultsCountText = document.getElementById("results-count-text");
   const appliedTags = document.getElementById("applied-tags");
   const resetFiltersBtn = document.getElementById("reset-filters-btn");
   const emptyResetBtn = document.getElementById("empty-reset-btn");
 
+  // Channel Banner Elements
+  const channelFilterBanner = document.getElementById("channel-filter-banner");
+  const bannerChannelKind = document.getElementById("banner-channel-kind");
+  const bannerChannelName = document.getElementById("banner-channel-name");
+  const bannerChannelTopics = document.getElementById("banner-channel-topics");
+  const bannerChannelBlurb = document.getElementById("banner-channel-blurb");
+  const bannerChannelCount = document.getElementById("banner-channel-count");
+  const bannerChannelYt = document.getElementById("banner-channel-yt");
+  const bannerChannelClear = document.getElementById("banner-channel-clear");
+
+  // View Sections
+  const catalogSection = document.getElementById("catalog-section");
+  const channelsSection = document.getElementById("channels-section");
+  const coursesSection = document.getElementById("courses-section");
   const videoGrid = document.getElementById("video-grid");
   const facultyGrid = document.getElementById("faculty-grid");
   const coursesGrid = document.getElementById("courses-grid");
   const emptyState = document.getElementById("empty-state");
 
-  const catalogSection = document.getElementById("catalog-section");
-  const channelsSection = document.getElementById("channels-section");
-  const coursesSection = document.getElementById("courses-section");
-
+  // View Toggles
   const viewModeCatalog = document.getElementById("view-mode-catalog");
   const viewModeChannels = document.getElementById("view-mode-channels");
   const viewModePlaylists = document.getElementById("view-mode-playlists");
 
-  const statChannels = document.getElementById("stat-channels");
+  // Header Counters
   const statVideos = document.getElementById("stat-videos");
+  const statChannels = document.getElementById("stat-channels");
 
-  // Modals
-  const channelModal = document.getElementById("channel-modal");
-  const modalChannelName = document.getElementById("modal-channel-name");
-  const modalChannelKind = document.getElementById("modal-channel-kind");
-  const modalChannelBlurb = document.getElementById("modal-channel-blurb");
-  const modalChannelTopics = document.getElementById("modal-channel-topics");
-  const modalChannelYtLink = document.getElementById("modal-channel-yt-link");
-  const modalChannelCount = document.getElementById("modal-channel-count");
-  const modalChannelVideos = document.getElementById("modal-channel-videos");
-  const modalCloseBtn = document.getElementById("modal-close-btn");
+  /**
+   * Defensive JSON Loader
+   * Tries candidate paths (./data, ../data, data, /lectern/data)
+   */
+  async function fetchJsonDefensive(filename) {
+    const candidatePaths = [
+      `./data/${filename}`,
+      `../data/${filename}`,
+      `data/${filename}`,
+      `/lectern/data/${filename}`,
+    ];
 
-  const videoModal = document.getElementById("video-modal");
-  const modalVideoChannel = document.getElementById("modal-video-channel");
-  const modalVideoTitle = document.getElementById("modal-video-title");
-  const videoPlayerContainer = document.getElementById("video-player-container");
-  const playerDurationBadge = document.getElementById("player-duration-badge");
-  const playerKindBadge = document.getElementById("player-kind-badge");
-  const playerDirectYtLink = document.getElementById("player-direct-yt-link");
-  const videoModalCloseBtn = document.getElementById("video-modal-close-btn");
+    for (const path of candidatePaths) {
+      try {
+        const response = await fetch(path);
+        if (response.ok) {
+          return await response.json();
+        }
+      } catch (err) {
+        // Continue to next candidate path
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Normalize video collection (supports raw array or { videos: [...] })
+   */
+  function extractVideos(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.videos)) return data.videos;
+    return [];
+  }
+
+  /**
+   * Normalize channels collection (supports raw array or { channels: [...] })
+   */
+  function extractChannels(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.channels)) return data.channels;
+    return [];
+  }
+
+  /**
+   * Normalize playlists collection (supports raw array or { playlists: [...] })
+   */
+  function extractPlaylists(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.playlists)) return data.playlists;
+    return [];
+  }
 
   /**
    * Format duration in seconds to "MM:SS" or "H:MM:SS"
    */
   function formatDuration(seconds) {
     if (seconds == null || isNaN(seconds)) return "—";
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
+    const totalSec = Math.round(Number(seconds));
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = Math.floor(totalSec % 60);
     if (h > 0) {
       return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
     }
@@ -85,7 +139,7 @@
   }
 
   /**
-   * Format ISO date string into readable academic format
+   * Format ISO date string into readable academic format: "Sep 2024"
    */
   function formatDate(isoStr) {
     if (!isoStr) return "";
@@ -103,7 +157,7 @@
    */
   function escapeHTML(str) {
     if (!str) return "";
-    return str
+    return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -112,11 +166,24 @@
   }
 
   /**
-   * Match duration buckets
+   * Detect short-form video
+   */
+  function isShortVideo(video) {
+    if (video.durationSec != null && video.durationSec < 60) return true;
+    if (video.kind === "short") return true;
+    const title = (video.title || "").toLowerCase();
+    if (title.includes("#shorts") || title.includes("#short")) return true;
+    const url = (video.url || "").toLowerCase();
+    if (url.includes("/shorts/")) return true;
+    return false;
+  }
+
+  /**
+   * Match duration bucket: 12-20, 20-45, 45-90, 90+
    */
   function matchesDurationBucket(sec, bucket) {
     if (bucket === "all") return true;
-    if (sec == null) return false; // exclude unknown when filtering specific duration
+    if (sec == null) return false; // Specific duration filter requires known duration
     const min = sec / 60;
     if (bucket === "12-20") return min >= 12 && min < 20;
     if (bucket === "20-45") return min >= 20 && min < 45;
@@ -126,7 +193,25 @@
   }
 
   /**
-   * Token-based search ranking score
+   * Match recency bucket: past-1, past-3, classic
+   */
+  function matchesRecencyBucket(publishedAt, bucket) {
+    if (bucket === "all") return true;
+    if (!publishedAt) return false;
+    const pubDate = new Date(publishedAt).getTime();
+    if (isNaN(pubDate)) return false;
+    const now = Date.now();
+    const oneYearMs = 365.25 * 24 * 3600 * 1000;
+    const diffMs = now - pubDate;
+
+    if (bucket === "past-1") return diffMs <= oneYearMs;
+    if (bucket === "past-3") return diffMs <= 3 * oneYearMs;
+    if (bucket === "classic") return diffMs > 3 * oneYearMs;
+    return true;
+  }
+
+  /**
+   * In-memory search scoring
    */
   function scoreVideo(video, queryTokens) {
     if (queryTokens.length === 0) return 1;
@@ -138,11 +223,17 @@
 
     let score = 0;
     for (const token of queryTokens) {
-      if (titleLower.includes(token)) score += 10;
-      else if (channelLower.includes(token)) score += 6;
-      else if (topicsLower.includes(token)) score += 4;
-      else if (blurbLower.includes(token)) score += 2;
-      else return 0; // All tokens must match somewhere (AND condition)
+      if (titleLower.includes(token)) {
+        score += 12;
+      } else if (channelLower.includes(token)) {
+        score += 8;
+      } else if (topicsLower.includes(token)) {
+        score += 5;
+      } else if (blurbLower.includes(token)) {
+        score += 3;
+      } else {
+        return 0; // All tokens must match somewhere (AND search)
+      }
     }
     return score;
   }
@@ -155,10 +246,13 @@
     const tokens = rawQuery.length > 0 ? rawQuery.split(/\s+/).filter(Boolean) : [];
 
     let list = state.videos.filter((v) => {
-      // 1. Minimum duration filter (enforced >= 12 min when duration is known)
-      if (v.durationSec != null && v.durationSec < 720) return false;
+      // 1. Default hide under 12 min and Shorts when duration known
+      if (state.hideShortsAndUnder12m) {
+        if (isShortVideo(v)) return false;
+        if (v.durationSec != null && v.durationSec < 720) return false;
+      }
 
-      // 2. Channel filter (if channel view activated)
+      // 2. Channel focus filter
       if (state.selectedChannelId && v.channelId !== state.selectedChannelId) {
         return false;
       }
@@ -177,12 +271,17 @@
         }
       }
 
-      // 5. Duration bucket
+      // 5. Duration bucket filter
       if (!matchesDurationBucket(v.durationSec, state.selectedDuration)) {
         return false;
       }
 
-      // 6. Search query
+      // 6. Recency filter
+      if (!matchesRecencyBucket(v.publishedAt, state.selectedRecency)) {
+        return false;
+      }
+
+      // 7. In-memory search query
       if (tokens.length > 0) {
         const score = scoreVideo(v, tokens);
         if (score === 0) return false;
@@ -194,74 +293,81 @@
       return true;
     });
 
-    // Sort list
+    // Sort
     if (state.selectedSort === "relevant" && tokens.length > 0) {
       list.sort((a, b) => b._searchScore - a._searchScore);
+    } else if (state.selectedSort === "newest" || state.selectedSort === "relevant") {
+      list.sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
     } else if (state.selectedSort === "duration-desc") {
       list.sort((a, b) => (b.durationSec || 0) - (a.durationSec || 0));
     } else if (state.selectedSort === "duration-asc") {
       list.sort((a, b) => (a.durationSec || 0) - (b.durationSec || 0));
     } else if (state.selectedSort === "title-asc") {
       list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-    } else {
-      // Default: sort by date or catalog order
-      list.sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
     }
 
     return list;
   }
 
   /**
-   * Render video card HTML
+   * Create Video Card Element
+   * Click opens YouTube in a new tab.
+   * Clicking channel name filters by that channel.
+   * Clicking a topic tag filters by that topic.
    */
   function createVideoCardElement(video) {
     const card = document.createElement("article");
     card.className = "video-card";
     card.setAttribute("role", "article");
     card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", `${video.title} by ${video.channelName}. Opens YouTube in new tab.`);
 
     const durText = formatDuration(video.durationSec);
     const dateText = formatDate(video.publishedAt);
-    const kindLabel = (video.kind || "visual-explainer").replace("-", " ");
+    const kindLabel = (video.kind || "visual-explainer").replace(/-/g, " ");
+    const ytUrl = video.url || `https://www.youtube.com/watch?v=${video.id}`;
+    const fallbackThumb = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+    const thumbUrl = video.thumbnail || fallbackThumb;
+
     const topicsHtml = (video.topics || [])
-      .map((t) => `<span class="card-topic-tag">${escapeHTML(t)}</span>`)
+      .map((t) => `<button type="button" class="card-topic-tag" data-topic="${escapeHTML(t)}">${escapeHTML(t)}</button>`)
       .join("");
 
     card.innerHTML = `
       <div class="card-media">
         <img 
           class="card-thumbnail" 
-          src="${escapeHTML(video.thumbnail)}" 
+          src="${escapeHTML(thumbUrl)}" 
           alt="${escapeHTML(video.title)}" 
           loading="lazy"
-          onerror="this.src='https://i.ytimg.com/vi/${video.id}/hqdefault.jpg'"
+          onerror="this.src='${fallbackThumb}'"
         />
         <span class="card-duration-badge">${escapeHTML(durText)}</span>
         <span class="card-kind-badge">${escapeHTML(kindLabel)}</span>
       </div>
       <div class="card-content">
         <div class="card-channel-row">
-          <a href="#" class="card-channel-name" data-channel-id="${escapeHTML(video.channelId)}">
+          <button type="button" class="card-channel-btn" data-channel-id="${escapeHTML(video.channelId)}" title="Filter catalog by ${escapeHTML(video.channelName)}">
             ${escapeHTML(video.channelName)}
-          </a>
+          </button>
           <span class="card-date">${escapeHTML(dateText)}</span>
         </div>
         <h3 class="card-title" title="${escapeHTML(video.title)}">
           ${escapeHTML(video.title)}
         </h3>
         <p class="card-blurb" title="${escapeHTML(video.blurb || '')}">
-          ${escapeHTML(video.blurb || "Lecture-grade exposition from the curated canon.")}
+          ${escapeHTML(video.blurb || "Curated lecture-grade exposition.")}
         </p>
         <div class="card-footer">
           <div class="card-topics">
             ${topicsHtml}
           </div>
           <a 
-            href="${escapeHTML(video.url)}" 
+            href="${escapeHTML(ytUrl)}" 
             target="_blank" 
             rel="noopener noreferrer" 
             class="card-action-link"
-            title="Open on YouTube"
+            title="Open on YouTube in new tab"
           >
             Watch ↗
           </a>
@@ -269,25 +375,38 @@
       </div>
     `;
 
-    // Click on channel name filters to that channel or opens modal
-    const channelLink = card.querySelector(".card-channel-name");
-    channelLink.addEventListener("click", (e) => {
+    // Filter by channel when channel button clicked
+    const channelBtn = card.querySelector(".card-channel-btn");
+    channelBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      openChannelModal(video.channelId);
+      setChannelFilter(video.channelId);
     });
 
-    // Clicking the card opens the video player modal (with direct link)
+    // Filter by topic when topic badge clicked
+    card.querySelectorAll(".card-topic-tag").forEach((tBtn) => {
+      tBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setTopicFilter(tBtn.dataset.topic);
+      });
+    });
+
+    // Clicking anywhere on the card opens YouTube in a new tab
     card.addEventListener("click", (e) => {
-      // If clicked on watch link directly, let default action happen
-      if (e.target.closest(".card-action-link")) return;
-      openVideoModal(video);
+      if (e.target.closest(".card-channel-btn") || e.target.closest(".card-topic-tag")) {
+        return;
+      }
+      window.open(ytUrl, "_blank", "noopener,noreferrer");
     });
 
+    // Keyboard accessibility (Enter/Space opens YouTube in new tab)
     card.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        openVideoModal(video);
+        if (e.target === card) {
+          e.preventDefault();
+          window.open(ytUrl, "_blank", "noopener,noreferrer");
+        }
       }
     });
 
@@ -295,9 +414,87 @@
   }
 
   /**
-   * Render catalog
+   * Render Channel Banner (Show channel blurb and details)
+   */
+  function renderChannelBanner() {
+    if (!state.selectedChannelId) {
+      channelFilterBanner.hidden = true;
+      return;
+    }
+
+    const channel = state.channelsMap.get(state.selectedChannelId);
+    const channelVideos = state.videos.filter((v) => v.channelId === state.selectedChannelId);
+    const channelName = channel ? channel.name : (channelVideos[0] ? channelVideos[0].channelName : "Faculty");
+    const channelKind = channel ? (channel.kind || "curated-channel").replace(/-/g, " ") : "Faculty";
+    const channelBlurb = channel ? channel.blurb : (channelVideos[0] ? channelVideos[0].blurb : "Selected faculty in the Lectern canon.");
+    const topics = channel && channel.topics ? channel.topics : (channelVideos[0] ? channelVideos[0].topics : []);
+    const ytUrl = `https://www.youtube.com/channel/${state.selectedChannelId}`;
+
+    bannerChannelKind.textContent = channelKind;
+    bannerChannelName.textContent = channelName;
+    bannerChannelBlurb.textContent = channelBlurb;
+    bannerChannelCount.textContent = `${channelVideos.length} lecture-grade work${channelVideos.length === 1 ? "" : "s"} in canon`;
+    bannerChannelYt.href = ytUrl;
+
+    bannerChannelTopics.innerHTML = (topics || [])
+      .map((t) => `<span class="applied-badge">${escapeHTML(t)}</span>`)
+      .join("");
+
+    channelFilterBanner.hidden = false;
+  }
+
+  /**
+   * Render Active Query / Filter Indicator Bar
+   */
+  function renderActiveQueryBar(filteredCount) {
+    const tags = [];
+
+    if (state.searchQuery.trim()) {
+      tags.push(`Query: "${state.searchQuery.trim()}"`);
+    }
+    if (state.selectedTopic !== "all") {
+      tags.push(`Topic: ${state.selectedTopic}`);
+    }
+    if (state.selectedKind !== "all") {
+      tags.push(`Kind: ${state.selectedKind.replace(/-/g, " ")}`);
+    }
+    if (state.selectedDuration !== "all") {
+      tags.push(`Duration: ${state.selectedDuration}m`);
+    }
+    if (state.selectedRecency !== "all") {
+      const recLabels = { "past-1": "< 1 yr", "past-3": "< 3 yrs", classic: "Archival" };
+      tags.push(`Recency: ${recLabels[state.selectedRecency] || state.selectedRecency}`);
+    }
+    if (state.selectedChannelId) {
+      const ch = state.channelsMap.get(state.selectedChannelId);
+      tags.push(`Channel: ${ch ? ch.name : state.selectedChannelId}`);
+    }
+    if (!state.hideShortsAndUnder12m) {
+      tags.push(`Including <12m & Shorts`);
+    }
+
+    const hasFilters =
+      tags.length > 0 ||
+      state.searchQuery.trim().length > 0 ||
+      state.selectedSort !== "relevant";
+
+    if (hasFilters) {
+      activeQueryBar.hidden = false;
+      resultsCountText.textContent = `Showing ${filteredCount.toLocaleString()} of ${state.videos.length.toLocaleString()} works`;
+      appliedTags.innerHTML = tags
+        .map((tag) => `<span class="applied-badge">${escapeHTML(tag)}</span>`)
+        .join("");
+    } else {
+      activeQueryBar.hidden = true;
+    }
+  }
+
+  /**
+   * Render Main Catalog
    */
   function renderCatalog() {
+    renderChannelBanner();
+
     const filtered = getFilteredVideos();
     videoGrid.innerHTML = "";
 
@@ -306,7 +503,6 @@
       emptyState.hidden = false;
     } else {
       videoGrid.hidden = false;
-      emptyState.hidden = false; // toggle below
       emptyState.hidden = true;
 
       const frag = document.createDocumentFragment();
@@ -320,49 +516,20 @@
   }
 
   /**
-   * Render Active Query / Filter Indicator Bar
-   */
-  function renderActiveQueryBar(count) {
-    const tags = [];
-
-    if (state.searchQuery.trim()) {
-      tags.push(`Query: "${state.searchQuery.trim()}"`);
-    }
-    if (state.selectedTopic !== "all") {
-      tags.push(`Topic: ${state.selectedTopic}`);
-    }
-    if (state.selectedKind !== "all") {
-      tags.push(`Kind: ${state.selectedKind}`);
-    }
-    if (state.selectedDuration !== "all") {
-      tags.push(`Duration: ${state.selectedDuration}m`);
-    }
-    if (state.selectedChannelId) {
-      const ch = state.channels.find((c) => c.id === state.selectedChannelId);
-      tags.push(`Faculty: ${ch ? ch.name : state.selectedChannelId}`);
-    }
-
-    if (tags.length > 0) {
-      activeQueryBar.hidden = false;
-      resultsCountText.textContent = `Showing ${count} works in selection`;
-      appliedTags.innerHTML = tags
-        .map((t) => `<span class="applied-badge">${escapeHTML(t)}</span>`)
-        .join("");
-    } else {
-      activeQueryBar.hidden = false;
-      resultsCountText.textContent = `Showing all ${count} works in library`;
-      appliedTags.innerHTML = `<span class="applied-badge">Full Library</span>`;
-    }
-  }
-
-  /**
-   * Render Faculty / Channels View
+   * Render Faculty Grid
    */
   function renderFaculty() {
     facultyGrid.innerHTML = "";
-    const frag = document.createDocumentFragment();
+    const list = state.channels;
 
-    for (const ch of state.channels) {
+    if (list.length === 0) {
+      facultyGrid.innerHTML = `<p style="grid-column: 1/-1; font-style: italic; color: var(--ink-muted);">No faculty channels currently registered.</p>`;
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    for (const ch of list) {
+      const count = state.videos.filter((v) => v.channelId === ch.id).length;
       const card = document.createElement("article");
       card.className = "faculty-card";
 
@@ -371,23 +538,32 @@
         .join("");
 
       card.innerHTML = `
-        <div class="faculty-header">
-          <div>
-            <h3 class="faculty-title">${escapeHTML(ch.name)}</h3>
-            <span class="faculty-kind-tag">${escapeHTML(ch.kind)}</span>
-          </div>
+        <div class="faculty-card-header">
+          <h3 class="faculty-name">${escapeHTML(ch.name)}</h3>
+          <span class="faculty-kind">${escapeHTML((ch.kind || "Explainer").replace(/-/g, " "))}</span>
         </div>
-        <p class="faculty-blurb">${escapeHTML(ch.blurb)}</p>
+        <div class="card-topics" style="margin-bottom: 0.75rem;">
+          ${topicsHtml}
+        </div>
+        <p class="faculty-blurb">${escapeHTML(ch.blurb || "")}</p>
         <div class="faculty-footer">
-          <div class="card-topics">${topicsHtml}</div>
-          <button type="button" class="faculty-filter-btn" data-channel-id="${escapeHTML(ch.id)}">
-            View Works ↗
-          </button>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted);">
+            ${count} curated work${count === 1 ? "" : "s"}
+          </span>
+          <div class="faculty-actions">
+            <a href="https://www.youtube.com/channel/${escapeHTML(ch.id)}" target="_blank" rel="noopener noreferrer" class="faculty-yt-link">
+              YouTube ↗
+            </a>
+            <button type="button" class="faculty-filter-btn" data-channel-id="${escapeHTML(ch.id)}">
+              View Lectures
+            </button>
+          </div>
         </div>
       `;
 
-      card.querySelector(".faculty-filter-btn").addEventListener("click", () => {
-        openChannelModal(ch.id);
+      const filterBtn = card.querySelector(".faculty-filter-btn");
+      filterBtn.addEventListener("click", () => {
+        setChannelFilter(ch.id);
       });
 
       frag.appendChild(card);
@@ -396,13 +572,19 @@
   }
 
   /**
-   * Render Courses / Playlists View
+   * Render Courses / Playlists Grid
    */
   function renderCourses() {
     coursesGrid.innerHTML = "";
-    const frag = document.createDocumentFragment();
+    const list = state.playlists;
 
-    for (const pl of state.playlists) {
+    if (list.length === 0) {
+      coursesGrid.innerHTML = `<p style="grid-column: 1/-1; font-style: italic; color: var(--ink-muted);">No course playlists registered or playlists catalog unavailable.</p>`;
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    for (const pl of list) {
       const card = document.createElement("article");
       card.className = "course-card";
 
@@ -410,35 +592,39 @@
         .map((t) => `<span class="card-topic-tag">${escapeHTML(t)}</span>`)
         .join("");
 
+      const ytUrl = `https://www.youtube.com/playlist?list=${pl.id}`;
+
       card.innerHTML = `
-        <h3>${escapeHTML(pl.title)}</h3>
-        <p class="course-channel">${escapeHTML(pl.channelName)} · ${escapeHTML(pl.kind)}</p>
-        <p class="course-blurb">${escapeHTML(pl.blurb)}</p>
+        <span class="course-channel">${escapeHTML(pl.channelName)}</span>
+        <h3 class="course-title">${escapeHTML(pl.title)}</h3>
+        <p class="course-blurb">${escapeHTML(pl.blurb || "")}</p>
         <div class="course-footer">
-          <div class="card-topics">${topicsHtml}</div>
-          <a 
-            href="https://www.youtube.com/playlist?list=${escapeHTML(pl.id)}" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="course-yt-link"
-          >
-            Open Playlist on YouTube ↗
+          <div class="card-topics">
+            ${topicsHtml}
+          </div>
+          <a href="${escapeHTML(ytUrl)}" target="_blank" rel="noopener noreferrer" class="course-action-link">
+            Open Course on YouTube ↗
           </a>
         </div>
       `;
+
       frag.appendChild(card);
     }
     coursesGrid.appendChild(frag);
   }
 
   /**
-   * Switch View Mode
+   * View Mode Switcher
    */
   function setViewMode(mode) {
     state.currentView = mode;
+
     viewModeCatalog.classList.toggle("active", mode === "catalog");
+    viewModeCatalog.setAttribute("aria-selected", mode === "catalog" ? "true" : "false");
     viewModeChannels.classList.toggle("active", mode === "channels");
+    viewModeChannels.setAttribute("aria-selected", mode === "channels" ? "true" : "false");
     viewModePlaylists.classList.toggle("active", mode === "playlists");
+    viewModePlaylists.setAttribute("aria-selected", mode === "playlists" ? "true" : "false");
 
     catalogSection.hidden = mode !== "catalog";
     channelsSection.hidden = mode !== "channels";
@@ -454,119 +640,67 @@
   }
 
   /**
-   * Channel Modal
+   * Channel Filter Trigger
    */
-  function openChannelModal(channelId) {
-    const ch = state.channels.find((c) => c.id === channelId);
-    if (!ch) return;
-
-    modalChannelName.textContent = ch.name;
-    modalChannelKind.textContent = (ch.kind || "Visual Explainer").replace("-", " ");
-    modalChannelBlurb.textContent = ch.blurb;
-    modalChannelYtLink.href = `https://www.youtube.com/channel/${ch.id}`;
-
-    modalChannelTopics.innerHTML = (ch.topics || [])
-      .map((t) => `<span class="card-topic-tag">${escapeHTML(t)}</span>`)
-      .join("");
-
-    const channelVids = state.videos.filter((v) => v.channelId === ch.id);
-    modalChannelCount.textContent = channelVids.length;
-
-    modalChannelVideos.innerHTML = "";
-    if (channelVids.length === 0) {
-      modalChannelVideos.innerHTML = `<p style="font-style:italic;color:var(--ink-muted);">No videos currently ingested for this faculty member.</p>`;
-    } else {
-      const frag = document.createDocumentFragment();
-      for (const v of channelVids) {
-        const item = document.createElement("div");
-        item.className = "video-card";
-        item.innerHTML = `
-          <div class="card-media">
-            <img class="card-thumbnail" src="${escapeHTML(v.thumbnail)}" alt="" loading="lazy"/>
-            <span class="card-duration-badge">${escapeHTML(formatDuration(v.durationSec))}</span>
-          </div>
-          <div class="card-content" style="padding:0.75rem;">
-            <h4 style="font-size:0.95rem;font-weight:700;line-height:1.3;margin-bottom:0.4rem;">${escapeHTML(v.title)}</h4>
-            <a href="${escapeHTML(v.url)}" target="_blank" rel="noopener noreferrer" class="card-action-link" style="font-size:0.75rem;">Watch ↗</a>
-          </div>
-        `;
-        frag.appendChild(item);
-      }
-      modalChannelVideos.appendChild(frag);
-    }
-
-    channelModal.hidden = false;
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeChannelModal() {
-    channelModal.hidden = true;
-    document.body.style.overflow = "";
+  function setChannelFilter(channelId) {
+    state.selectedChannelId = channelId;
+    setViewMode("catalog");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    renderCatalog();
   }
 
   /**
-   * Video Modal
+   * Topic Filter Trigger
    */
-  function openVideoModal(video) {
-    modalVideoChannel.textContent = video.channelName;
-    modalVideoTitle.textContent = video.title;
-    playerDurationBadge.textContent = formatDuration(video.durationSec);
-    playerKindBadge.textContent = (video.kind || "Visual Explainer").replace("-", " ");
-    playerDirectYtLink.href = video.url;
-
-    // Modest YouTube embed
-    videoPlayerContainer.innerHTML = `
-      <iframe 
-        src="https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&modestbranding=1&rel=0" 
-        title="${escapeHTML(video.title)}" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen
-      ></iframe>
-    `;
-
-    videoModal.hidden = false;
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeVideoModal() {
-    videoModal.hidden = true;
-    videoPlayerContainer.innerHTML = "";
-    document.body.style.overflow = "";
+  function setTopicFilter(topic) {
+    state.selectedTopic = topic;
+    topicChips.querySelectorAll(".chip").forEach((chip) => {
+      chip.classList.toggle("active", chip.dataset.topic === topic);
+    });
+    setViewMode("catalog");
+    renderCatalog();
   }
 
   /**
-   * Reset All Filters
+   * Reset All Filters to Canon Defaults
    */
   function resetAllFilters() {
     state.searchQuery = "";
     state.selectedTopic = "all";
     state.selectedKind = "all";
     state.selectedDuration = "all";
-    state.selectedChannelId = null;
+    state.selectedRecency = "all";
     state.selectedSort = "relevant";
+    state.selectedChannelId = null;
+    state.hideShortsAndUnder12m = true;
 
     searchInput.value = "";
     clearSearchBtn.hidden = true;
 
-    // Reset chip active states
+    // Reset Chip Visuals
     document.querySelectorAll(".chip").forEach((chip) => {
       const topic = chip.dataset.topic;
       const kind = chip.dataset.kind;
       const duration = chip.dataset.duration;
+      const recency = chip.dataset.recency;
       const sort = chip.dataset.sort;
 
       if (topic) chip.classList.toggle("active", topic === "all");
       if (kind) chip.classList.toggle("active", kind === "all");
       if (duration) chip.classList.toggle("active", duration === "all");
+      if (recency) chip.classList.toggle("active", recency === "all");
       if (sort) chip.classList.toggle("active", sort === "relevant");
     });
+
+    toggleShortsGuardBtn.classList.add("active");
+    toggleShortsGuardBtn.querySelector(".guard-indicator").textContent = "✓";
 
     setViewMode("catalog");
     renderCatalog();
   }
 
   /**
-   * Setup Event Listeners
+   * Event Listeners Setup
    */
   function setupEvents() {
     // Search input
@@ -621,6 +755,17 @@
       renderCatalog();
     });
 
+    // Recency chips
+    recencyChips.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-recency]");
+      if (!btn) return;
+      recencyChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+      btn.classList.add("active");
+      state.selectedRecency = btn.dataset.recency;
+      if (state.currentView !== "catalog") setViewMode("catalog");
+      renderCatalog();
+    });
+
     // Sort chips
     sortChips.addEventListener("click", (e) => {
       const btn = e.target.closest("button[data-sort]");
@@ -628,6 +773,20 @@
       sortChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
       btn.classList.add("active");
       state.selectedSort = btn.dataset.sort;
+      renderCatalog();
+    });
+
+    // Toggle Shorts & <12m Guard
+    toggleShortsGuardBtn.addEventListener("click", () => {
+      state.hideShortsAndUnder12m = !state.hideShortsAndUnder12m;
+      toggleShortsGuardBtn.classList.toggle("active", state.hideShortsAndUnder12m);
+      toggleShortsGuardBtn.querySelector(".guard-indicator").textContent = state.hideShortsAndUnder12m ? "✓" : "○";
+      renderCatalog();
+    });
+
+    // Channel Banner Clear Button
+    bannerChannelClear.addEventListener("click", () => {
+      state.selectedChannelId = null;
       renderCatalog();
     });
 
@@ -640,42 +799,69 @@
     viewModeChannels.addEventListener("click", () => setViewMode("channels"));
     viewModePlaylists.addEventListener("click", () => setViewMode("playlists"));
 
-    // Modal close events
-    modalCloseBtn.addEventListener("click", closeChannelModal);
-    channelModal.addEventListener("click", (e) => {
-      if (e.target === channelModal) closeChannelModal();
-    });
-
-    videoModalCloseBtn.addEventListener("click", closeVideoModal);
-    videoModal.addEventListener("click", (e) => {
-      if (e.target === videoModal) closeVideoModal();
-    });
-
+    // Global keyboard shortcut: Escape clears query or channel focus
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        if (!channelModal.hidden) closeChannelModal();
-        if (!videoModal.hidden) closeVideoModal();
+        if (state.searchQuery || state.selectedChannelId) {
+          if (state.searchQuery) {
+            state.searchQuery = "";
+            searchInput.value = "";
+            clearSearchBtn.hidden = true;
+          } else if (state.selectedChannelId) {
+            state.selectedChannelId = null;
+          }
+          renderCatalog();
+        }
       }
     });
   }
 
   /**
-   * Load JSON Datasets
+   * Load JSON Datasets defensively
    */
   async function loadData() {
     try {
-      const [vRes, cRes, pRes] = await Promise.all([
-        fetch("./data/videos.json"),
-        fetch("./data/channels.json"),
-        fetch("./data/playlists.json"),
+      const [vData, cData, pData] = await Promise.all([
+        fetchJsonDefensive("videos.json"),
+        fetchJsonDefensive("channels.json"),
+        fetchJsonDefensive("playlists.json"),
       ]);
 
-      if (vRes.ok) state.videos = await vRes.json();
-      if (cRes.ok) state.channels = await cRes.json();
-      if (pRes.ok) state.playlists = await pRes.json();
+      state.videos = extractVideos(vData);
+      state.channels = extractChannels(cData);
+      state.playlists = extractPlaylists(pData);
 
-      statChannels.textContent = state.channels.length || "62";
-      statVideos.textContent = state.videos.length || "0";
+      // If channels.json was missing or empty, build channels defensive map from videos
+      if (state.channels.length === 0 && state.videos.length > 0) {
+        const derivedMap = new Map();
+        for (const v of state.videos) {
+          if (v.channelId && !derivedMap.has(v.channelId)) {
+            derivedMap.set(v.channelId, {
+              id: v.channelId,
+              name: v.channelName || "Faculty",
+              topics: v.topics || [],
+              kind: v.kind || "visual-explainer",
+              blurb: v.blurb || "Lecture-grade creator in the Lectern canon.",
+            });
+          }
+        }
+        state.channels = Array.from(derivedMap.values());
+      }
+
+      // Populate channels fast lookup map
+      state.channelsMap.clear();
+      for (const ch of state.channels) {
+        state.channelsMap.set(ch.id, ch);
+      }
+
+      // Update counters
+      statVideos.textContent = state.videos.length.toLocaleString();
+      statChannels.textContent = state.channels.length.toLocaleString();
+
+      // If playlists missing, disable playlists button gracefully
+      if (state.playlists.length === 0) {
+        viewModePlaylists.title = "No course playlists available";
+      }
 
       renderCatalog();
     } catch (err) {
@@ -683,13 +869,13 @@
       videoGrid.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <h2 class="empty-title">Initialization Error</h2>
-          <p class="empty-copy">Unable to load library data catalogs. Please verify python server is active.</p>
+          <p class="empty-copy">Unable to load library data catalogs. Please run a local web server (e.g. <code>python3 -m http.server</code>) from the repository root.</p>
         </div>
       `;
     }
   }
 
-  // Initialize
+  // Initialize Application
   setupEvents();
   loadData();
 })();
