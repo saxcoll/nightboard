@@ -1,0 +1,436 @@
+[
+  {
+    "id": "UCYO_jab_esuFRV4b17AJtAw",
+    "name": "3Blue1Brown",
+    "topics": ["math", "cs", "ml"],
+    "kind": "visual-explainer",
+    "blurb": "Grant Sanderson's gold standard for visual mathematics, linear algebra, calculus, and neural network intuition."
+  },
+  {
+    "id": "UConVfxXodg78Tzh5nNu85Ew",
+    "name": "Welch Labs",
+    "topics": ["math", "cs", "ml"],
+    "kind": "visual-explainer",
+    "blurb": "Exceptional visual expositions on imaginary numbers, neural networks, and foundational computer science."
+  },
+  {
+    "id": "UC1_uAIS3r8Vu6JjXWvastJg",
+    "name": "Mathologer",
+    "topics": ["math"],
+    "kind": "visual-explainer",
+    "blurb": "Burkard Polster's rigorous and proof-driven mathematical explorations across pure geometry, algebra, and number theory."
+  },
+  {
+    "id": "UCwcJNLn9hzJxkQHpzFD-Qcg",
+    "name": "Aleph 0",
+    "topics": ["math"],
+    "kind": "visual-explainer",
+    "blurb": "Deep, beautifully animated expositions of complex analysis, topology, and abstract algebra."
+  },
+  {
+    "id": "UCu7Zwf4X_OQ-TEnou0zdyRA",
+    "name": "Morphocular",
+    "topics": ["math", "physics"],
+    "kind": "visual-explainer",
+    "blurb": "Geometric transformations, optical physics, and mathematical insights rendered with crystal clarity."
+  },
+  {
+    "id": "UCK8XIGR5kRidIw2fWqwyHRA",
+    "name": "Reducible",
+    "topics": ["cs"],
+    "kind": "visual-explainer",
+    "blurb": "Intuitive, high-fidelity visual dissections of core computer science algorithms and data structures."
+  },
+  {
+    "id": "UCKzJFdi57J53Vr_BkTfN3uQ",
+    "name": "Primer",
+    "topics": ["math", "cs"],
+    "kind": "visual-explainer",
+    "blurb": "Agent-based simulations exploring evolutionary game theory, economics, and natural selection dynamics."
+  },
+  {
+    "id": "UCQBQeWDycPczq1zril7hHHg",
+    "name": "Polylog",
+    "topics": ["cs", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Theoretical computer science, randomized algorithms, and computational complexity animated by CS researchers."
+  },
+  {
+    "id": "UCiA2o_f1tGf2AxMROpPpxtg",
+    "name": "Mutual Information",
+    "topics": ["math", "ml", "cs"],
+    "kind": "visual-explainer",
+    "blurb": "Rigorous, clear mathematical expositions of probability distributions, statistics, and machine learning theory."
+  },
+  {
+    "id": "UCN8wTUlSAroLslWyf87E2pw",
+    "name": "eigenchris",
+    "topics": ["physics", "math"],
+    "kind": "course",
+    "blurb": "Masterclass multi-part video lecture series on tensor calculus, general relativity, and quantum mechanics."
+  },
+  {
+    "id": "UCR2uRTQ53V_egXKFflMMaaw",
+    "name": "Artem Kirsanov",
+    "topics": ["cs", "ml"],
+    "kind": "visual-explainer",
+    "blurb": "Exquisite visual explainers of computational neuroscience, memory systems, and modern deep learning models."
+  },
+  {
+    "id": "UCvsuJjPiqOBVpW3pNBMywWQ",
+    "name": "Richard Behiel",
+    "topics": ["math"],
+    "kind": "visual-explainer",
+    "blurb": "Deep mathematical journeys unpacking quaternions, geometric proofs, and classical mechanics."
+  },
+  {
+    "id": "UCIZ5ZOeiXYbmKTl_85ghNPw",
+    "name": "Physics Explained",
+    "topics": ["physics", "math"],
+    "kind": "lecture",
+    "blurb": "Step-by-step blackboard mathematical derivations of quantum field theory, thermodynamics, and Lagrangian mechanics."
+  },
+  {
+    "id": "UCV6uM3y-8TeO7JlCtcEN-Bg",
+    "name": "ScienceClic",
+    "topics": ["physics", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Geometric, 3D animated deep dives into general relativity, spacetime geometry, and particle physics."
+  },
+  {
+    "id": "UCS0N5baNlQWJCUrhCEo8WlA",
+    "name": "Ben Eater",
+    "topics": ["cs", "engineering"],
+    "kind": "course",
+    "blurb": "Building an 8-bit computer, 6502 system, and networking stack from basic logic gates and breadboards."
+  },
+  {
+    "id": "UC9-y-6csu5WGm29I7JiwpnA",
+    "name": "Computerphile",
+    "topics": ["cs"],
+    "kind": "visual-explainer",
+    "blurb": "University of Nottingham professors elucidating algorithms, cryptography, compilers, and hardware fundamentals."
+  },
+  {
+    "id": "UCXUPKJO5MZQN11PqgIvyuvQ",
+    "name": "Andrej Karpathy",
+    "topics": ["ml", "cs"],
+    "kind": "course",
+    "blurb": "The acclaimed Neural Networks: Zero to Hero series coding backpropagation, GPTs, and tokenizers line by line."
+  },
+  {
+    "id": "UCEBb1b_L6zDS3xTUrIALZOw",
+    "name": "MIT OpenCourseWare",
+    "topics": ["math", "cs", "physics", "engineering"],
+    "kind": "course",
+    "blurb": "Full semester MIT courses in linear algebra, algorithms, classical mechanics, and differential equations."
+  },
+  {
+    "id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+    "name": "Stanford Online",
+    "topics": ["cs", "ml", "engineering"],
+    "kind": "course",
+    "blurb": "Graduate computer science courses including Andrew Ng's CS229 Machine Learning and CS231n Deep Learning."
+  },
+  {
+    "id": "UCK8f1CUe8y403u3b0gCINww",
+    "name": "Oxford University",
+    "topics": ["philosophy", "math", "history"],
+    "kind": "lecture",
+    "blurb": "Academic lectures, colloquia, and symposia from Oxford scholars across humanities, logic, and sciences."
+  },
+  {
+    "id": "UC1t6kKXoBvjdr8m9KJ2Fx7A",
+    "name": "Gresham College",
+    "topics": ["math", "history", "philosophy", "physics"],
+    "kind": "lecture",
+    "blurb": "Over 400 years of free public university lectures by Britain's foremost professors and scholars."
+  },
+  {
+    "id": "UCt9hZNtnxyqDbzQ12-O1HBQ",
+    "name": "Institute for Advanced Study",
+    "topics": ["math", "physics"],
+    "kind": "lecture",
+    "blurb": "Groundbreaking theoretical mathematics and physics research seminars from Princeton's IAS."
+  },
+  {
+    "id": "UC_hukbByJP7OZ3Xm2tszacQ",
+    "name": "Jeffrey Kaplan",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Clear, direct university classroom lectures in ethics, epistemology, and philosophical paradoxes."
+  },
+  {
+    "id": "UCFaYLR_1aryjfB7hLrKGRaQ",
+    "name": "Michael Sugrue",
+    "topics": ["philosophy", "history"],
+    "kind": "lecture",
+    "blurb": "The celebrated Great Minds of the Western Intellectual Tradition lectures on Plato, Kant, Nietzsche, and Marcus Aurelius."
+  },
+  {
+    "id": "UCcfV5toRlZiueQgYPE-z57A",
+    "name": "Philosophy Overdose",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Archival recordings and interviews of 20th-century philosophers including Russell, Wittgenstein, Quine, and Anscombe."
+  },
+  {
+    "id": "UCv_vLHiWVBh_FR9vbeuiY-A",
+    "name": "Historia Civilis",
+    "topics": ["history"],
+    "kind": "visual-explainer",
+    "blurb": "Masterful strategic animations of ancient Roman politics, the fall of the Republic, and classic battles."
+  },
+  {
+    "id": "UCT6Y5JJPKe_JDMivpKgVXew",
+    "name": "Fall of Civilizations",
+    "topics": ["history"],
+    "kind": "long-conversation",
+    "blurb": "Epic, deeply researched narrative histories exploring the collapse of world civilizations with primary sources."
+  },
+  {
+    "id": "UCivA7_KLKWo43tFcCkFvydw",
+    "name": "Applied Science",
+    "topics": ["engineering", "physics"],
+    "kind": "visual-explainer",
+    "blurb": "Ben Krasnow's meticulous laboratory demonstrations of electron microscopy, semiconductor fabrication, and physics."
+  },
+  {
+    "id": "UCdp4_l1vPmpN-gDbUwhaRUQ",
+    "name": "Branch Education",
+    "topics": ["engineering", "cs"],
+    "kind": "visual-explainer",
+    "blurb": "Astonishing 3D photorealistic animations exploring semiconductor chips, memory architectures, and wireless communications."
+  },
+  {
+    "id": "UC4EY_qnSeAP1xGsh61eOoJA",
+    "name": "YaleCourses",
+    "topics": ["philosophy", "history", "physics"],
+    "kind": "course",
+    "blurb": "Full Yale Open Courses including Shelly Kagan on Death, Paul Bloom on Psychology, and European History."
+  },
+  {
+    "id": "UCYeF244yNGuFefuFKqxIAXw",
+    "name": "The Royal Institution",
+    "topics": ["physics", "math", "engineering"],
+    "kind": "lecture",
+    "blurb": "Prestigious discourse lectures by leading scientists exploring quantum mechanics, cosmology, and mathematics."
+  },
+  {
+    "id": "UC7_gcs09iThXybpVgjHZ_7g",
+    "name": "PBS Space Time",
+    "topics": ["physics"],
+    "kind": "visual-explainer",
+    "blurb": "Dr. Matt O'Dowd's rigorous astrophysics and quantum mechanics expositions that treat viewers like physicists."
+  },
+  {
+    "id": "UCd5sT2b1nnrRfansDRRxpeA",
+    "name": "Dialectic",
+    "topics": ["philosophy"],
+    "kind": "visual-explainer",
+    "blurb": "Rigorous illustrated expositions of Continental and Analytic philosophy, epistemology, and political ontology."
+  },
+  {
+    "id": "UC6HCkkqSjOGbIV0-OwyhL7Q",
+    "name": "Jared Henderson",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Thoughtful, academic discussions on existentialism, metaphysics, reading the Western canon, and moral theory."
+  },
+  {
+    "id": "UCMmaBzfCCwZ2KqaBJjkj0fw",
+    "name": "Kings and Generals",
+    "topics": ["history"],
+    "kind": "visual-explainer",
+    "blurb": "Comprehensive historical documentaries covering military strategy, ancient empires, and geopolitical history."
+  },
+  {
+    "id": "UCvPXiKxH-eH9xq-80vpgmKQ",
+    "name": "Epic History TV",
+    "topics": ["history"],
+    "kind": "visual-explainer",
+    "blurb": "Detailed campaign-level historical analyses of Alexander the Great, the Napoleonic Wars, and the Byzantine Empire."
+  },
+  {
+    "id": "UCqoGR_EedlhKDVuWNwYWRbg",
+    "name": "Voices of the Past",
+    "topics": ["history"],
+    "kind": "lecture",
+    "blurb": "Primary source letters, diaries, and eyewitness accounts from ancient Rome, Japan, China, and the Americas."
+  },
+  {
+    "id": "UC_aOteuWIY8ITg7DQQspG1g",
+    "name": "History of the Earth",
+    "topics": ["history", "physics"],
+    "kind": "visual-explainer",
+    "blurb": "Exhaustively researched geological and paleontological deep time history of planet Earth."
+  },
+  {
+    "id": "UCtRFmSyL4fSLQkn-wMqlmdA",
+    "name": "History of the Universe",
+    "topics": ["physics"],
+    "kind": "visual-explainer",
+    "blurb": "Narrated scientific journeys from the Big Bang through stellar nucleosynthesis and cosmology."
+  },
+  {
+    "id": "UCR1IuLEqb6UEA_zQ81kwXfg",
+    "name": "Real Engineering",
+    "topics": ["engineering"],
+    "kind": "visual-explainer",
+    "blurb": "First-principles engineering breakdowns of aerospace, energy systems, materials science, and civil infrastructure."
+  },
+  {
+    "id": "UCAK3X_yAuxrQo_6q_mzPK8w",
+    "name": "Practical Engineering",
+    "topics": ["engineering"],
+    "kind": "visual-explainer",
+    "blurb": "Grady Hillhouse's physical laboratory models explaining dams, soil mechanics, concrete, and electrical grids."
+  },
+  {
+    "id": "UCy0tKL1T7wFoYcxCe0xjN6Q",
+    "name": "Technology Connections",
+    "topics": ["engineering"],
+    "kind": "visual-explainer",
+    "blurb": "Exhaustive, circuit-level deep dives into how refrigeration, analog video, vacuum tubes, and induction cooktops operate."
+  },
+  {
+    "id": "UCEIwxahdLz7bap-VDs9h35A",
+    "name": "Steve Mould",
+    "topics": ["physics", "engineering"],
+    "kind": "visual-explainer",
+    "blurb": "Intricate experimental physics apparatuses demonstrating fluid dynamics, non-Newtonian effects, and acoustic phenomena."
+  },
+  {
+    "id": "UC2bkHVIDjXS7sgrgjFtzOXQ",
+    "name": "EngineerGuy",
+    "topics": ["engineering"],
+    "kind": "visual-explainer",
+    "blurb": "Professor Bill Hammack's legendary breakdowns of design, manufacturing, and fundamental engineering principles."
+  },
+  {
+    "id": "UCmtyQOKKmrMVaKuRXz02jbQ",
+    "name": "Sebastian Lague",
+    "topics": ["cs", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Brilliant computational experiments in procedural generation, ray tracing, solar system simulation, and chess engines."
+  },
+  {
+    "id": "UC5_6ZD6s8klmMu9TXEB_1IA",
+    "name": "CodeEmporium",
+    "topics": ["ml", "cs"],
+    "kind": "course",
+    "blurb": "Detailed mathematical breakdowns of transformer attention mechanisms, BERT, diffusion models, and optimization."
+  },
+  {
+    "id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+    "name": "StatQuest with Josh Starmer",
+    "topics": ["ml", "math"],
+    "kind": "course",
+    "blurb": "Step-by-step clarity breaking down PCA, logistic regression, gradient boosting, and neural networks."
+  },
+  {
+    "id": "UCMLtBahI5DMrt0NPvDSoIRQ",
+    "name": "Machine Learning Street Talk",
+    "topics": ["ml", "philosophy", "cs"],
+    "kind": "long-conversation",
+    "blurb": "In-depth, mathematically sophisticated technical interviews with leading AI researchers, mathematicians, and philosophers."
+  },
+  {
+    "id": "UCP7jMXSY2xbc3KCAE0MHQ-A",
+    "name": "Google DeepMind",
+    "topics": ["ml", "cs"],
+    "kind": "lecture",
+    "blurb": "Official DeepMind research lectures and symposia on reinforcement learning, AlphaFold, and frontier model architecture."
+  },
+  {
+    "id": "UCSHZKyawb77ixDdsGog4iWA",
+    "name": "Lex Fridman",
+    "topics": ["cs", "ml", "philosophy", "physics"],
+    "kind": "long-conversation",
+    "blurb": "Long-form 3 to 4-hour academic dialogues with world-leading mathematicians, physicists, computer scientists, and historians."
+  },
+  {
+    "id": "UCRhV1rWIpm_pU19bBm_2RXw",
+    "name": "Sean Carroll",
+    "topics": ["physics", "philosophy"],
+    "kind": "long-conversation",
+    "blurb": "Theoretical physicist Sean Carroll's Mindscape conversations on quantum mechanics, time, cosmology, and philosophy."
+  },
+  {
+    "id": "UC1LpsuAUaKoMzzJSEt5WImw",
+    "name": "Asianometry",
+    "topics": ["engineering", "history"],
+    "kind": "visual-explainer",
+    "blurb": "Deeply technical documentaries on photolithography, TSMC, semiconductor packaging, and industrial history."
+  },
+  {
+    "id": "UCLB7AzTwc6VFZrBsO2ucBMg",
+    "name": "Robert Miles AI Safety",
+    "topics": ["ml", "cs", "philosophy"],
+    "kind": "visual-explainer",
+    "blurb": "Rigorous theoretical treatments of AI alignment, instrumental convergence, and reinforcement learning reward hacking."
+  },
+  {
+    "id": "UCEtxsMx4qsoitFwjBdLU_gA",
+    "name": "Gregory B. Sadler",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Detailed text-by-text classroom commentaries on Aristotle, Epictetus, Hegel, and moral philosophy."
+  },
+  {
+    "id": "UC1VzCyqpmCaRh8_BnijbOvg",
+    "name": "Carneades.org",
+    "topics": ["philosophy"],
+    "kind": "course",
+    "blurb": "Concise, structured philosophical logic, formal epistemology, and skepticism lessons covering major debates."
+  },
+  {
+    "id": "UCGVHC4L6gjS13AMe-JMOjHg",
+    "name": "Kane B",
+    "topics": ["philosophy"],
+    "kind": "lecture",
+    "blurb": "Academic philosopher Kane Baker's rigorous explanations of modal logic, formal epistemology, and metaphysics."
+  },
+  {
+    "id": "UClcE-kVhqyiHCcjYwcpfj9w",
+    "name": "LiveOverflow",
+    "topics": ["cs"],
+    "kind": "visual-explainer",
+    "blurb": "Deep technical explorations into binary exploitation, reverse engineering, and low-level computer architecture."
+  },
+  {
+    "id": "UCFk__1iexL3T5gvGcMpeHNA",
+    "name": "Looking Glass Universe",
+    "topics": ["physics", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Mathematical expositions of quantum states, wavefunctions, and the philosophy of quantum mechanics."
+  },
+  {
+    "id": "UCXl4i9dYBrFOabk0xGmbkRA",
+    "name": "Dwarkesh Patel",
+    "topics": ["history", "cs", "ml"],
+    "kind": "long-conversation",
+    "blurb": "Deeply researched, hours-long intellectual interviews on semiconductor engineering, historical biography, and AI progress."
+  },
+  {
+    "id": "UC_iD0xppBwwsrM9DegC5cQQ",
+    "name": "Jon Gjengset",
+    "topics": ["cs"],
+    "kind": "course",
+    "blurb": "Exhaustive multi-hour livestreams and deep dives into Rust systems programming, concurrency, and async internals."
+  },
+  {
+    "id": "UCEbYhDd6c6vngsF5PQpFVWg",
+    "name": "Tsoding Daily",
+    "topics": ["cs", "math"],
+    "kind": "visual-explainer",
+    "blurb": "Writing compilers, neural networks in C from scratch, and exploring esoteric mathematics and programming systems."
+  },
+  {
+    "id": "UCLv7Gzc3VTO6ggFlXY0sOyw",
+    "name": "Harvard University",
+    "topics": ["philosophy", "history", "cs"],
+    "kind": "course",
+    "blurb": "University courses and lectures including Michael Sandel's Justice and Harvard CS50."
+  }
+]

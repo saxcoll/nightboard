@@ -1,0 +1,92 @@
+[
+  {
+    "id": "PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab",
+    "channelId": "UCYO_jab_esuFRV4b17AJtAw",
+    "channelName": "3Blue1Brown",
+    "title": "Essence of Linear Algebra",
+    "topics": ["math", "ml", "cs"],
+    "kind": "course",
+    "blurb": "The definitive visual introduction to linear algebra: linear transformations, determinants, eigenvectors, and span."
+  },
+  {
+    "id": "PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr",
+    "channelId": "UCYO_jab_esuFRV4b17AJtAw",
+    "channelName": "3Blue1Brown",
+    "title": "Essence of Calculus",
+    "topics": ["math", "physics"],
+    "kind": "course",
+    "blurb": "Intuitive, geometric derivations of the fundamental theorem of calculus, derivatives, integrals, and Taylor series."
+  },
+  {
+    "id": "PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+    "channelId": "UCYO_jab_esuFRV4b17AJtAw",
+    "channelName": "3Blue1Brown",
+    "title": "Neural Networks",
+    "topics": ["ml", "cs", "math"],
+    "kind": "course",
+    "blurb": "Foundational visual breakdown of multi-layer perceptrons, gradient descent, backpropagation, and transformer architectures."
+  },
+  {
+    "id": "PLnQX-jgAF5pTkwtUuVpqS5tuWmJ-6ZM-Z",
+    "channelId": "UCYO_jab_esuFRV4b17AJtAw",
+    "channelName": "3Blue1Brown",
+    "title": "Summer of Math Exposition (SoME1) Featured Entries",
+    "topics": ["math", "cs", "physics"],
+    "kind": "visual-explainer",
+    "blurb": "Curated community masterpieces from the inaugural Summer of Math Exposition covering topology, geometry, and algorithms."
+  },
+  {
+    "id": "PLnQX-jgAF5pTZXPiD8ciEARRylD9brJXU",
+    "channelId": "UCYO_jab_esuFRV4b17AJtAw",
+    "channelName": "3Blue1Brown",
+    "title": "Summer of Math Exposition (SoME2) Featured Entries",
+    "topics": ["math", "cs", "physics"],
+    "kind": "visual-explainer",
+    "blurb": "The best peer-reviewed explainer entries from SoME2 featuring p-adic numbers, Bézier curves, and graph theory."
+  },
+  {
+    "id": "PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ",
+    "channelId": "UCXUPKJO5MZQN11PqgIvyuvQ",
+    "channelName": "Andrej Karpathy",
+    "title": "Neural Networks: Zero to Hero",
+    "topics": ["ml", "cs"],
+    "kind": "course",
+    "blurb": "Building deep learning from the ground up: micrograd autograd engine, makemore language model, and GPT-2 from scratch."
+  },
+  {
+    "id": "PLE7DDD91010BC51F8",
+    "channelId": "UCEBb1b_L6zDS3xTUrIALZOw",
+    "channelName": "MIT OpenCourseWare",
+    "title": "MIT 18.06 Linear Algebra (Gilbert Strang)",
+    "topics": ["math", "engineering"],
+    "kind": "course",
+    "blurb": "Professor Gilbert Strang's legendary full-semester MIT undergraduate linear algebra lectures."
+  },
+  {
+    "id": "PLUl4u3cNGP63EdVPNLG3ToM6LaEUuStEY",
+    "channelId": "UCEBb1b_L6zDS3xTUrIALZOw",
+    "channelName": "MIT OpenCourseWare",
+    "title": "MIT 6.006 Introduction to Algorithms",
+    "topics": ["cs"],
+    "kind": "course",
+    "blurb": "MIT's core algorithms course covering data structures, sorting, trees, hashing, shortest paths, and dynamic programming."
+  },
+  {
+    "id": "PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU",
+    "channelId": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+    "channelName": "Stanford Online",
+    "title": "Stanford CS229: Machine Learning (Andrew Ng)",
+    "topics": ["ml", "cs", "math"],
+    "kind": "course",
+    "blurb": "Andrew Ng's flagship Stanford graduate course in supervised learning, SVMs, kernels, deep learning, and reinforcement learning."
+  },
+  {
+    "id": "PLFaYLR_1aryjfB7hLrKGRaQ_GreatMinds",
+    "channelId": "UCFaYLR_1aryjfB7hLrKGRaQ",
+    "channelName": "Michael Sugrue",
+    "title": "Great Minds of the Western Intellectual Tradition",
+    "topics": ["philosophy", "history"],
+    "kind": "lecture",
+    "blurb": "Dr. Michael Sugrue's complete university lectures spanning Plato, Aristotle, Machiavelli, Descartes, Kant, and Nietzsche."
+  }
+]

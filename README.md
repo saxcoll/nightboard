@@ -22,3 +22,8 @@ Open [http://localhost:5173](http://localhost:5173).
 - **Live ops** — announcement ticker, walk-over help matching, projector mode, demo countdown.
 
 Demo data is seeded for **Cursor Calgary Meetup — August** at ZayZoon. Swap `js/data.js` for a real backend later. GitHub uses unauthenticated API (60 req/hr). Point `team.repo` at the real org/repo when you have it.
+
+---
+
+Looking for lecture-grade technical YouTube? Check out [Lectern](./lectern/), a curated library of high-signal mathematical and academic expositions.
+

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lectern — Curated Lecture-Grade Library</title>
+    <meta name="description" content="A searchable library of lecture-grade YouTube density. High signal mathematics, theoretical computer science, physics, engineering, machine learning, philosophy, and history." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <!-- Top banner / Academic parchment bar -->
+    <header class="lectern-header">
+      <div class="lectern-header-inner">
+        <div class="brand-cluster">
+          <div class="crest-mark" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">Lectern</h1>
+            <p class="brand-sub">A Curated Library of Lecture-Grade YouTube</p>
+          </div>
+        </div>
+
+        <div class="header-metadata">
+          <div class="canon-stat">
+            <span class="stat-number" id="stat-channels">62</span>
+            <span class="stat-label">Canon Channels</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="canon-stat">
+            <span class="stat-number" id="stat-videos">0</span>
+            <span class="stat-label">Lectures & Expositions</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <a href="#about-lectern" class="nav-about-link">Curatorial Note</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="lectern-main">
+      <!-- Search and Filter Control Deck -->
+      <section class="control-deck" aria-label="Library catalog controls">
+        <div class="search-row">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="search" 
+              id="library-search" 
+              placeholder="Search lectures, topics, channels (e.g. 'linear algebra', 'attention', 'Kant', 'entropy')..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button type="button" id="clear-search-btn" class="clear-search-btn" title="Clear search" hidden aria-label="Clear search">×</button>
+          </div>
+          <div class="view-toggles">
+            <button type="button" class="view-btn active" id="view-mode-catalog" title="Catalog View">Lectures</button>
+            <button type="button" class="view-btn" id="view-mode-channels" title="Canon Faculty View">Canon Faculty</button>
+            <button type="button" class="view-btn" id="view-mode-playlists" title="Curated Courses View">Courses</button>
+          </div>
+        </div>
+
+        <!-- Filter Chips Section -->
+        <div class="filter-deck" id="filter-deck">
+          <!-- Topic Row -->
+          <div class="filter-group">
+            <span class="filter-label">Topic:</span>
+            <div class="chip-container" id="topic-chips" role="group" aria-label="Topic filters">
+              <button type="button" class="chip active" data-topic="all">All Topics</button>
+              <button type="button" class="chip" data-topic="math">Mathematics</button>
+              <button type="button" class="chip" data-topic="cs">Computer Science</button>
+              <button type="button" class="chip" data-topic="ml">Machine Learning</button>
+              <button type="button" class="chip" data-topic="physics">Physics</button>
+              <button type="button" class="chip" data-topic="engineering">Engineering</button>
+              <button type="button" class="chip" data-topic="philosophy">Philosophy</button>
+              <button type="button" class="chip" data-topic="history">History</button>
+            </div>
+          </div>
+
+          <!-- Kind Row -->
+          <div class="filter-group">
+            <span class="filter-label">Kind:</span>
+            <div class="chip-container" id="kind-chips" role="group" aria-label="Exposition style filters">
+              <button type="button" class="chip active" data-kind="all">All Styles</button>
+              <button type="button" class="chip" data-kind="visual-explainer">Visual Explainer</button>
+              <button type="button" class="chip" data-kind="course">Course Series</button>
+              <button type="button" class="chip" data-kind="lecture">University Lecture</button>
+              <button type="button" class="chip" data-kind="long-conversation">Academic Dialogue</button>
+            </div>
+          </div>
+
+          <!-- Duration & Quality Filter Row -->
+          <div class="filter-group">
+            <span class="filter-label">Duration:</span>
+            <div class="chip-container" id="duration-chips" role="group" aria-label="Duration filters">
+              <button type="button" class="chip active" data-duration="all">All Durations</button>
+              <button type="button" class="chip" data-duration="12-20">12 – 20 min</button>
+              <button type="button" class="chip" data-duration="20-45">20 – 45 min</button>
+              <button type="button" class="chip" data-duration="45-90">45 – 90 min</button>
+              <button type="button" class="chip" data-duration="90+">90+ min</button>
+            </div>
+            
+            <div class="filter-divider" aria-hidden="true"></div>
+
+            <span class="filter-label">Sort:</span>
+            <div class="chip-container" id="sort-chips" role="group" aria-label="Sort options">
+              <button type="button" class="chip active" data-sort="relevant">Relevance</button>
+              <button type="button" class="chip" data-sort="duration-desc">Longest First</button>
+              <button type="button" class="chip" data-sort="duration-asc">Shortest First</button>
+              <button type="button" class="chip" data-sort="title-asc">Title (A-Z)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Filter Indicator Bar -->
+        <div class="active-query-bar" id="active-query-bar" hidden>
+          <span class="results-count-text" id="results-count-text">Showing 0 works</span>
+          <div class="applied-tags" id="applied-tags"></div>
+          <button type="button" class="reset-filters-btn" id="reset-filters-btn">Reset All Filters</button>
+        </div>
+      </section>
+
+      <!-- Video Catalog Grid View -->
+      <section class="catalog-view" id="catalog-section" aria-label="Lecture works">
+        <div class="grid-container" id="video-grid" role="feed">
+          <!-- Dynamically populated video cards -->
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state" hidden>
+          <div class="empty-crest" aria-hidden="true">📜</div>
+          <h2 class="empty-title">No Works Found in the Canon</h2>
+          <p class="empty-copy">
+            This library is not a broad search index over YouTube; it is an intentionally restricted, high-density academic canon. 
+            Popular science, reaction videos, clickbait, and music theory are excluded by design.
+          </p>
+          <button type="button" class="empty-reset-btn" id="empty-reset-btn">Return to Full Canon</button>
+        </div>
+      </section>
+
+      <!-- Channels Faculty Grid View -->
+      <section class="channels-view" id="channels-section" hidden aria-label="Curated faculty and channels">
+        <div class="section-intro">
+          <h2>The Curated Faculty & Institutions</h2>
+          <p class="section-sub">62 rigorously selected academic institutions, theoretical researchers, and first-principles creators.</p>
+        </div>
+        <div class="faculty-grid" id="faculty-grid">
+          <!-- Dynamically populated channel cards -->
+        </div>
+      </section>
+
+      <!-- Courses / Playlists Grid View -->
+      <section class="courses-view" id="courses-section" hidden aria-label="Curated Courses and Curricula">
+        <div class="section-intro">
+          <h2>Comprehensive Courses & Series</h2>
+          <p class="section-sub">Full multi-part lecture series and exposition playlists from 3Blue1Brown, MIT OCW, Karpathy, and Michael Sugrue.</p>
+        </div>
+        <div class="courses-grid" id="courses-grid">
+          <!-- Dynamically populated playlist cards -->
+        </div>
+      </section>
+
+      <!-- Curatorial Statement / About Footer Section -->
+      <section class="about-section" id="about-lectern" aria-label="Curatorial note">
+        <div class="about-card">
+          <div class="about-header">
+            <h3>Curatorial Thesis & Selection Standards</h3>
+            <span class="about-edition">Lectern v1.0 · Curated by Samuel</span>
+          </div>
+          <div class="about-grid">
+            <div class="about-col">
+              <h4>The Standard of Density</h4>
+              <p>
+                Lectern is built for students and researchers who learn best when material is rigorous, mathematically transparent, and unapologetically technical. 
+                We use Grant Sanderson's (3Blue1Brown) and Welch Labs' work as the standard of density: content that does not shy away from proofs, matrices, and formal mechanics.
+              </p>
+            </div>
+            <div class="about-col">
+              <h4>What is Included (IN)</h4>
+              <p>
+                University lecture series (MIT OpenCourseWare, Stanford, Oxford, Yale, Gresham College, IAS), deep algorithmic architectures (Karpathy, Ben Eater, Reducible, Polylog), 
+                pure mathematical foundations (Mathologer, Aleph 0, Richard Behiel), and foundational humanities (Michael Sugrue, Jeffrey Kaplan, Historia Civilis, Fall of Civilizations).
+              </p>
+            </div>
+            <div class="about-col">
+              <h4>What is Excluded (OUT)</h4>
+              <p>
+                Short-form sensationalism, superficial pop-science (Kurzgesagt, Veritasium, Crash Course, Two Minute Papers), tech hype mills (Fireship), TED talks, and 
+                all music theory channels (Adam Neely, Rick Beato, 12tone). Videos under 12 minutes and Shorts are discarded by default.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Channel Detail Modal -->
+    <div class="modal-backdrop" id="channel-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-channel-name">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <span class="modal-kicker" id="modal-channel-kind">Visual Explainer</span>
+            <h2 class="modal-title" id="modal-channel-name">—</h2>
+            <div class="modal-topics" id="modal-channel-topics"></div>
+          </div>
+          <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-blurb" id="modal-channel-blurb">—</p>
+          <div class="modal-channel-actions">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="channel-external-link" id="modal-channel-yt-link">
+              Open Channel on YouTube ↗
+            </a>
+          </div>
+          <div class="modal-shelf-header">
+            <h3>Curated Works in Library (<span id="modal-channel-count">0</span>)</h3>
+          </div>
+          <div class="modal-videos-grid" id="modal-channel-videos">
+            <!-- Channel videos injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Embed / Preview Modal -->
+    <div class="modal-backdrop" id="video-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-video-title">
+      <div class="modal-card video-player-card">
+        <div class="modal-header">
+          <div>
+            <span class="modal-kicker" id="modal-video-channel">—</span>
+            <h2 class="modal-title" id="modal-video-title">—</h2>
+          </div>
+          <button type="button" class="modal-close-btn" id="video-modal-close-btn" aria-label="Close modal">×</button>
+        </div>
+        <div class="video-player-container" id="video-player-container">
+          <!-- iframe injected when opened -->
+        </div>
+        <div class="modal-player-footer">
+          <div class="player-meta-badges">
+            <span class="badge" id="player-duration-badge">—</span>
+            <span class="badge" id="player-kind-badge">—</span>
+          </div>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="primary-yt-btn" id="player-direct-yt-link">
+            Watch Directly on YouTube ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>
