@@ -24,6 +24,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 from torch import nn
 
 from eval.metrics import (
@@ -57,50 +58,70 @@ def delta_star_torch(psi: torch.Tensor, R: torch.Tensor, dR: float, dZ: float) -
     return radial[:, :, 1:-1] + d2z[:, 1:-1, :]
 
 
-class _Decoder(nn.Module):
-    """Latent vector to a full ``(nr, nz)`` map via bilinear upsampling and convs."""
+class _ShapeDecoder(nn.Module):
+    """Latent vector to the dimensionless shape ``psi / psi_axis``.
 
-    def __init__(self, latent: int, nr: int, nz: int, channels: int = 32, base: int = 16):
+    Same skeleton as the params->psi surrogate: transposed convolutions from an
+    8×8 latent volume, then a full-resolution mix with normalized ``(R, Z)`` and
+    a broadcast of the latent code. The last convolution is zero-initialized so
+    the shape starts at 0.
+    """
+
+    def __init__(self, latent: int, nr: int, nz: int, channels: int = 32, base: int = 8):
         super().__init__()
         self.nr = int(nr)
         self.nz = int(nz)
-        base = int(base)
-        while base > 4 and 2 * base > min(self.nr, self.nz):
-            base //= 2
-        self.base = base
-        if channels % 4 != 0:
-            raise ValueError("decoder channels must be divisible by 4")
         self.channels = int(channels)
-        self.fc = nn.Linear(latent, self.channels * base * base)
-        layers: list[nn.Module] = []
-        size = base
-        while size * 2 <= min(self.nr, self.nz) - 1:
-            layers.append(nn.Upsample(scale_factor=2, mode="bilinear", align_corners=False))
-            layers.append(nn.Conv2d(self.channels, self.channels, kernel_size=3, padding=1))
-            layers.append(nn.GELU())
-            size *= 2
-        layers.append(nn.Upsample(size=(self.nr, self.nz), mode="bilinear", align_corners=False))
-        layers.append(nn.Conv2d(self.channels, self.channels // 2, kernel_size=3, padding=1))
-        layers.append(nn.GELU())
-        layers.append(nn.Conv2d(self.channels // 2, self.channels // 4, kernel_size=3, padding=1))
-        layers.append(nn.GELU())
-        self.body = nn.Sequential(*layers)
-        self.tail = nn.Conv2d(self.channels // 4, 1, kernel_size=3, padding=1)
-        nn.init.zeros_(self.tail.weight)
-        nn.init.zeros_(self.tail.bias)
+        self.base = 8 if int(base) >= 8 else 4
+        self.fc = nn.Linear(latent, self.channels * self.base * self.base)
+        self.up1 = nn.ConvTranspose2d(self.channels, 32, kernel_size=4, stride=2, padding=1)
+        self.up2 = nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1)
+        self.up3 = nn.ConvTranspose2d(16, 8, kernel_size=4, stride=2, padding=1)
+        self.lat_proj = nn.Linear(latent, 16)
+        self.ref1 = nn.Conv2d(8 + 2 + 16, 16, kernel_size=3, padding=1)
+        self.ref2 = nn.Conv2d(16, 1, kernel_size=1)
+        self.register_buffer("Rn", torch.linspace(-1.0, 1.0, self.nr))
+        self.register_buffer("Zn", torch.linspace(-1.0, 1.0, self.nz))
+        nn.init.xavier_uniform_(self.ref2.weight, gain=0.1)
+        nn.init.zeros_(self.ref2.bias)
+        # Exact zero keeps the untrained network at psi = 0 (tests and a stable start).
+        nn.init.zeros_(self.ref2.weight)
+
+    def set_grid(self, R, Z) -> None:
+        R_t = torch.as_tensor(R, dtype=torch.float32, device=self.Rn.device).flatten()
+        Z_t = torch.as_tensor(Z, dtype=torch.float32, device=self.Zn.device).flatten()
+        span_r = (R_t[-1] - R_t[0]).clamp_min(1e-8)
+        span_z = (Z_t[-1] - Z_t[0]).clamp_min(1e-8)
+        self.Rn.copy_(2.0 * (R_t - R_t[0]) / span_r - 1.0)
+        self.Zn.copy_(2.0 * (Z_t - Z_t[0]) / span_z - 1.0)
 
     def forward(self, latent: torch.Tensor) -> torch.Tensor:
-        x = self.fc(latent).view(-1, self.channels, self.base, self.base)
-        return self.tail(self.body(x)).squeeze(1)
+        b = latent.shape[0]
+        z = F.gelu(self.fc(latent)).view(b, self.channels, self.base, self.base)
+        z = F.gelu(self.up1(z))
+        z = F.gelu(self.up2(z))
+        z = F.gelu(self.up3(z))
+        z = F.interpolate(z, size=(self.nr, self.nz), mode="bilinear", align_corners=True)
+        rr = self.Rn.view(1, 1, self.nr, 1).expand(b, 1, self.nr, self.nz)
+        zz = self.Zn.view(1, 1, 1, self.nz).expand(b, 1, self.nr, self.nz)
+        code = self.lat_proj(latent).view(b, 16, 1, 1).expand(b, 16, self.nr, self.nz)
+        x = F.gelu(self.ref1(torch.cat([z, rr, zz, code], dim=1)))
+        return self.ref2(x).squeeze(1)
 
 
 class InverseNet(nn.Module):
-    """MLP encoder on normalized diagnostics, CNN decoder to ``psi``, aux head.
+    """MLP encoder on normalized diagnostics, then either a shape decoder or a surrogate.
 
-    Inputs are physical signals. Buffers hold the training-set normalization.
-    Outputs are physical ``psi`` of shape ``(N, nr, nz)`` and aux scalars of
-    shape ``(N, n_aux)`` (axis location and flux, plus shape parameters when
-    the dataset provides them).
+    ``arch="direct"`` predicts the dimensionless shape ``psi / psi_axis`` and
+    ``log(psi_axis)``. Physical flux is ``shape * exp(log psi_axis)``.
+
+    ``arch="hybrid"`` predicts the equilibrium parameters and maps them through
+    a frozen params->psi surrogate. ``B0`` is one of those parameters but does
+    not affect the Grad-Shafranov flux; the head still emits it so the
+    surrogate sees a complete vector.
+
+    Inputs are physical signals. Outputs are physical ``psi`` ``(N, nr, nz)``
+    and auxiliary scalars ``(N, n_aux)``.
     """
 
     def __init__(
@@ -113,7 +134,9 @@ class InverseNet(nn.Module):
         latent: int = 160,
         hidden: int = 320,
         channels: int = 32,
-        base: int = 16,
+        base: int = 8,
+        arch: str = "direct",
+        n_eq: int = 0,
     ):
         super().__init__()
         self.n_sensors = int(n_sensors)
@@ -125,7 +148,13 @@ class InverseNet(nn.Module):
         self.hidden = int(hidden)
         self.channels = int(channels)
         self.base = int(base)
-        n_in = self.n_sensors + self.n_coils
+        self.arch = str(arch)
+        self.n_eq = int(n_eq)
+        self.eq_names: list[str] = []
+        self.surrogate_frozen = False
+        self.skip_field = False
+        self._log_s: torch.Tensor | None = None
+        n_in = self.n_sensors + max(self.n_sensors - 1, 0) + 1 + self.n_coils
         self.encoder = nn.Sequential(
             nn.Linear(n_in, self.hidden),
             nn.GELU(),
@@ -134,7 +163,16 @@ class InverseNet(nn.Module):
             nn.Linear(self.hidden, self.latent),
             nn.GELU(),
         )
-        self.decoder = _Decoder(self.latent, self.nr, self.nz, channels=self.channels, base=self.base)
+        if self.arch == "direct":
+            self.decoder: _ShapeDecoder | None = _ShapeDecoder(
+                self.latent, self.nr, self.nz, channels=self.channels, base=self.base
+            )
+            self.log_axis: nn.Linear | None = nn.Linear(self.latent, 1)
+            nn.init.zeros_(self.log_axis.weight)
+            nn.init.zeros_(self.log_axis.bias)
+        else:
+            self.decoder = None
+            self.log_axis = None
         self.aux_head = nn.Sequential(
             nn.Linear(self.latent, self.hidden // 2),
             nn.GELU(),
@@ -142,6 +180,17 @@ class InverseNet(nn.Module):
         )
         nn.init.zeros_(self.aux_head[-1].weight)
         nn.init.zeros_(self.aux_head[-1].bias)
+        if self.n_eq > 0:
+            self.eq_head: nn.Sequential | None = nn.Sequential(
+                nn.Linear(self.latent, self.hidden),
+                nn.GELU(),
+                nn.Linear(self.hidden, self.n_eq),
+            )
+            nn.init.zeros_(self.eq_head[-1].weight)
+            nn.init.zeros_(self.eq_head[-1].bias)
+        else:
+            self.eq_head = None
+        self.surrogate = None
         self.register_buffer("sensor_mean", torch.zeros(self.n_sensors))
         self.register_buffer("sensor_std", torch.ones(self.n_sensors))
         self.register_buffer("sensor_rms", torch.ones(self.n_sensors))
@@ -150,6 +199,29 @@ class InverseNet(nn.Module):
         self.register_buffer("psi_scale", torch.ones(()))
         self.register_buffer("aux_mean", torch.zeros(self.n_aux))
         self.register_buffer("aux_std", torch.ones(self.n_aux))
+        self.register_buffer("eq_mean", torch.zeros(self.n_eq))
+        self.register_buffer("eq_std", torch.ones(self.n_eq))
+        # Ip-normalized magnetics: B and psi divided by the Rogowski channel.
+        # Amplitude is removed so the shape of the vessel signal is visible.
+        n_extra = max(self.n_sensors - 1, 0)
+        self.register_buffer("extra_mean", torch.zeros(n_extra))
+        self.register_buffer("extra_std", torch.ones(n_extra))
+        self.register_buffer("logrog_mean", torch.zeros(()))
+        self.register_buffer("logrog_std", torch.ones(()))
+
+    def train(self, mode: bool = True):
+        super().train(mode)
+        if self.surrogate is not None and self.surrogate_frozen:
+            self.surrogate.eval()
+        return self
+
+    def attach_surrogate(self, surrogate, frozen: bool = True) -> None:
+        self.surrogate = surrogate
+        self.surrogate_frozen = bool(frozen)
+        if frozen:
+            for param in self.surrogate.parameters():
+                param.requires_grad_(False)
+            self.surrogate.eval()
 
     def set_normalization(
         self,
@@ -174,17 +246,61 @@ class InverseNet(nn.Module):
             self.coil_mean.copy_(torch.as_tensor(coil_mean, dtype=torch.float32))
             self.coil_std.copy_(torch.as_tensor(coil_std, dtype=torch.float32))
 
-    def forward(
-        self, signals: torch.Tensor, coil_currents: torch.Tensor | None = None
-    ) -> tuple[torch.Tensor, torch.Tensor]:
+    def set_equilibrium_norm(self, mean: np.ndarray, std: np.ndarray, names: list[str]) -> None:
+        if self.n_eq == 0:
+            return
+        self.eq_mean.copy_(torch.as_tensor(mean, dtype=torch.float32))
+        self.eq_std.copy_(torch.as_tensor(std, dtype=torch.float32))
+        self.eq_names = list(names)
+
+    def set_ip_feature_norm(self, extra_mean, extra_std, logrog_mean: float, logrog_std: float) -> None:
+        self.extra_mean.copy_(torch.as_tensor(extra_mean, dtype=torch.float32))
+        self.extra_std.copy_(torch.as_tensor(extra_std, dtype=torch.float32))
+        self.logrog_mean.copy_(torch.tensor(float(logrog_mean), dtype=torch.float32))
+        self.logrog_std.copy_(torch.tensor(float(logrog_std), dtype=torch.float32))
+
+    def _latent(self, signals: torch.Tensor, coil_currents: torch.Tensor | None) -> torch.Tensor:
         x = (signals - self.sensor_mean) / self.sensor_std
+        parts = [x]
+        if signals.shape[-1] == self.n_sensors and self.n_sensors > 1:
+            rog = signals[:, -1:].abs().clamp_min(1.0)
+            extra = (signals[:, :-1] / rog - self.extra_mean) / self.extra_std.clamp_min(1e-8)
+            logrog = (torch.log(rog.squeeze(-1)) - self.logrog_mean) / self.logrog_std.clamp_min(1e-8)
+            parts.extend([extra, logrog.unsqueeze(-1)])
         if self.n_coils:
             if coil_currents is None:
                 raise ValueError("InverseNet was trained with coil currents")
             coils = (coil_currents - self.coil_mean) / self.coil_std
-            x = torch.cat([x, coils], dim=-1)
-        latent = self.encoder(x)
-        psi = self.decoder(latent) * self.psi_scale
+            parts.append(coils)
+        return self.encoder(torch.cat(parts, dim=-1))
+
+    def equilibrium_params(
+        self, signals: torch.Tensor, coil_currents: torch.Tensor | None = None
+    ) -> torch.Tensor | None:
+        """Raw equilibrium parameters ``(N, n_eq)``, or None if this net has no head."""
+        if self.eq_head is None:
+            return None
+        latent = self._latent(signals, coil_currents)
+        return self.eq_head(latent) * self.eq_std + self.eq_mean
+
+    def forward(
+        self, signals: torch.Tensor, coil_currents: torch.Tensor | None = None
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        latent = self._latent(signals, coil_currents)
+        self._log_s = None
+        if self.arch == "hybrid" and self.surrogate is not None and not self.skip_field:
+            if self.eq_head is None:
+                raise RuntimeError("hybrid InverseNet requires an equilibrium-parameter head")
+            params = self.eq_head(latent) * self.eq_std + self.eq_mean
+            psi = self.surrogate(params)
+        elif self.decoder is None or self.log_axis is None or self.skip_field:
+            psi = signals.new_zeros(signals.shape[0], self.nr, self.nz)
+        else:
+            shape = self.decoder(latent)
+            log_s = self.log_axis(latent).squeeze(-1)
+            self._log_s = log_s
+            scale = torch.exp(log_s.clamp(-6.0, 2.0))
+            psi = shape * scale.unsqueeze(-1).unsqueeze(-1)
         aux = self.aux_head(latent) * self.aux_std + self.aux_mean
         return psi, aux
 
@@ -219,6 +335,65 @@ def _aux_arrays(data: dict, index: np.ndarray) -> tuple[np.ndarray, list[str]]:
     return np.column_stack(columns).astype(np.float32), aux_names
 
 
+def _eq_matrix(data: dict, index: np.ndarray) -> tuple[np.ndarray | None, list[str]]:
+    """Equilibrium parameters in surrogate column order, when the file has them."""
+    from models.surrogate import PARAM_NAMES
+
+    names = _param_names(data)
+    if any(name not in names for name in PARAM_NAMES):
+        return None, []
+    params = np.asarray(data["params"], dtype=np.float64)
+    columns = [params[np.asarray(index), names.index(name)] for name in PARAM_NAMES]
+    return np.column_stack(columns).astype(np.float32), list(PARAM_NAMES)
+
+
+def _surrogate_path(explicit) -> Path | None:
+    if explicit:
+        path = Path(explicit)
+        return path if path.is_file() else None
+    for candidate in (
+        Path("outputs/surrogate/mlpcnn_pw0p1/checkpoint.pt"),
+        Path("/workspace/fusion-gs/outputs/surrogate/mlpcnn_pw0p1/checkpoint.pt"),
+    ):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _load_hybrid_surrogate(grid: Grid, data: dict, explicit):
+    """Frozen surrogate when the grid and parameter vector match, else None."""
+    path = _surrogate_path(explicit)
+    if path is None or _geometry_for(data) != "dshape":
+        return None
+    from models.surrogate import load_surrogate
+
+    surrogate = load_surrogate(path)
+    r_s = surrogate.R.detach().cpu().numpy()
+    z_s = surrogate.Z.detach().cpu().numpy()
+    if r_s.shape != np.asarray(grid.R).shape or z_s.shape != np.asarray(grid.Z).shape:
+        return None
+    if not (np.allclose(r_s, grid.R) and np.allclose(z_s, grid.Z)):
+        return None
+    return surrogate
+
+
+def _r2_columns(pred: np.ndarray, true: np.ndarray, names: list[str]) -> dict[str, float]:
+    scores = {}
+    for j, name in enumerate(names):
+        pp = np.asarray(pred[:, j], dtype=float)
+        tt = np.asarray(true[:, j], dtype=float)
+        keep = np.isfinite(pp) & np.isfinite(tt)
+        if int(keep.sum()) < 3:
+            scores[name] = float("nan")
+            continue
+        tt = tt[keep]
+        pp = pp[keep]
+        ss_tot = float(np.sum((tt - tt.mean()) ** 2))
+        ss_res = float(np.sum((tt - pp) ** 2))
+        scores[name] = float(1.0 - ss_res / ss_tot) if ss_tot > 0.0 else float("nan")
+    return scores
+
+
 def _std_floor(values: np.ndarray, floor: float = 1e-8) -> np.ndarray:
     std = np.asarray(values, dtype=np.float64)
     return np.where(std < floor, 1.0, std).astype(np.float32)
@@ -250,32 +425,57 @@ def _batch_loss(
     aux_weight: float,
     physics_weight: float,
     outside_weight: float,
+    eq: torch.Tensor | None = None,
+    eq_weight: float = 0.0,
+    scale_weight: float = 0.1,
+    psi_weight: float = 1.0,
 ) -> tuple[torch.Tensor, dict[str, float]]:
+    """Per-sample flux loss in units of ``psi / psi_axis``, plus scalar heads.
+
+    ``aux[:, 2]`` is ``psi_axis``. Dividing by that value, rather than one global
+    RMS, keeps low-current and high-current plasmas on the same scale.
+    """
     psi_pred, aux_pred = model(signals, coils)
-    scale = model.psi_scale.clamp(min=1e-12)
-    diff = (psi_pred - psi) / scale
-    mask_f = mask.to(diff.dtype)
-    inside_count = mask_f.sum().clamp(min=1.0)
-    outside = 1.0 - mask_f
-    outside_count = outside.sum().clamp(min=1.0)
-    loss_psi = (diff.square() * mask_f).sum() / inside_count
-    loss_out = (diff.square() * outside).sum() / outside_count
+    axis = aux[:, 2].clamp_min(1e-8).unsqueeze(-1).unsqueeze(-1)
+    err = ((psi_pred - psi) / axis).square()
+    w = mask.to(dtype=err.dtype)
+    w = w + (1.0 - w) * float(outside_weight)
+    num = (err * w).flatten(1).sum(dim=1)
+    den = w.flatten(1).sum(dim=1).clamp_min(1.0)
+    loss_psi = (num / den).mean()
     aux_scale = model.aux_std.clamp(min=1e-8)
     aux_err = (aux_pred - aux) / aux_scale
     loss_aux = aux_err.square().mean()
+    loss_scale = psi_pred.new_zeros(())
+    if scale_weight > 0.0 and model._log_s is not None:
+        target_log = torch.log(aux[:, 2].clamp_min(1e-8))
+        loss_scale = F.mse_loss(model._log_s, target_log)
+    loss_eq = psi_pred.new_zeros(())
+    if eq is not None and eq_weight > 0.0 and model.eq_head is not None:
+        eq_hat = model.equilibrium_params(signals, coils)
+        eq_n = (eq_hat - model.eq_mean) / model.eq_std.clamp_min(1e-8)
+        eq_t = (eq - model.eq_mean) / model.eq_std.clamp_min(1e-8)
+        loss_eq = (eq_n - eq_t).square().mean()
     loss_phys = psi_pred.new_zeros(())
-    if physics_weight > 0.0 and bool(interior.any()):
+    if physics_weight > 0.0 and psi_weight > 0.0 and bool(interior.any()) and not model.skip_field:
         dstar = delta_star_torch(psi_pred, R, dR, dZ)
         rhs = -MU0 * R[1:-1].view(1, -1, 1) * J[:, 1:-1, 1:-1]
-        w = interior.to(dstar.dtype)
-        resid = (dstar - rhs) * w
-        denom = (rhs.square() * w).sum().clamp(min=1e-30)
+        weight = interior.to(dstar.dtype)
+        resid = (dstar - rhs) * weight
+        denom = (rhs.square() * weight).sum().clamp(min=1e-30)
         loss_phys = resid.square().sum() / denom
-    total = loss_psi + outside_weight * loss_out + aux_weight * loss_aux + physics_weight * loss_phys
+    total = (
+        float(psi_weight) * loss_psi
+        + float(scale_weight) * loss_scale
+        + aux_weight * loss_aux
+        + float(eq_weight) * loss_eq
+        + physics_weight * loss_phys
+    )
     parts = {
         "psi": float(loss_psi.detach()),
-        "out": float(loss_out.detach()),
+        "scale": float(loss_scale.detach()),
         "aux": float(loss_aux.detach()),
+        "eq": float(loss_eq.detach()),
         "phys": float(loss_phys.detach()),
         "total": float(total.detach()),
     }
@@ -299,6 +499,10 @@ def _run_epoch_eval(
     outside_weight: float,
     batch_size: int,
     noise: torch.Tensor | None = None,
+    eq: torch.Tensor | None = None,
+    eq_weight: float = 0.0,
+    scale_weight: float = 0.1,
+    psi_weight: float = 1.0,
 ) -> float:
     model.eval()
     total = 0.0
@@ -311,6 +515,7 @@ def _run_epoch_eval(
             if noise is not None:
                 sig = sig + noise[start:stop]
             coil_b = None if coils is None else coils[start:stop]
+            eq_b = None if eq is None else eq[start:stop]
             loss, _ = _batch_loss(
                 model,
                 sig,
@@ -326,6 +531,10 @@ def _run_epoch_eval(
                 aux_weight,
                 physics_weight,
                 outside_weight,
+                eq=eq_b,
+                eq_weight=eq_weight,
+                scale_weight=scale_weight,
+                psi_weight=psi_weight,
             )
             width = stop - start
             total += float(loss) * width
@@ -567,8 +776,12 @@ def train_inverse(
     n_flux: int = 20,
     latent: int = 128,
     hidden: int = 256,
-    channels: int = 16,
+    channels: int = 32,
     base: int = 8,
+    arch: str = "auto",
+    surrogate_path=None,
+    eq_weight: float = 0.35,
+    scale_weight: float = 0.1,
 ):
     """Train on the dataset's train split and optionally evaluate test / OOD.
 
@@ -637,6 +850,22 @@ def train_inverse(
     if n_coils:
         coil_mean = coils_all[train_idx].mean(axis=0).astype(np.float32)
         coil_std = _std_floor(coils_all[train_idx].std(axis=0))
+    eq_all, eq_names = _eq_matrix(data, np.arange(signals.shape[0]))
+    resolved = str(arch)
+    surrogate = None
+    # Hybrid (sensors -> params -> frozen surrogate) ties the direct model on
+    # flux error and does not recover a, kappa, or the profile exponents, so the
+    # default stays the direct shape decoder.
+    if resolved == "auto":
+        resolved = "direct"
+    if resolved == "hybrid":
+        surrogate = _load_hybrid_surrogate(grid, data, surrogate_path)
+        if surrogate is None or eq_all is None:
+            if verbose:
+                print("hybrid surrogate unavailable for this grid; using direct", flush=True)
+            resolved = "direct"
+            surrogate = None
+    n_eq = 0 if eq_all is None else int(eq_all.shape[1])
     model = InverseNet(
         n_sensors=sensors.n_sensors,
         nr=grid.nr,
@@ -647,10 +876,34 @@ def train_inverse(
         hidden=hidden,
         channels=channels,
         base=base,
+        arch=resolved,
+        n_eq=n_eq,
     )
     model.set_normalization(
         sensor_mean, sensor_std, rms, psi_scale, aux_mean, aux_std, coil_mean, coil_std
     )
+    rog = np.maximum(np.abs(signals[:, -1:]), 1.0)
+    extra = signals[:, :-1] / rog
+    extra_mean = extra[train_idx].mean(axis=0).astype(np.float32)
+    extra_std = _std_floor(extra[train_idx].std(axis=0))
+    logrog = np.log(rog[:, 0])
+    logrog_mean = float(logrog[train_idx].mean())
+    logrog_std = float(logrog[train_idx].std())
+    if logrog_std < 1e-8:
+        logrog_std = 1.0
+    model.set_ip_feature_norm(extra_mean, extra_std, logrog_mean, logrog_std)
+    if model.decoder is not None:
+        model.decoder.set_grid(grid.R, grid.Z)
+    if n_eq and eq_all is not None:
+        model.set_equilibrium_norm(
+            eq_all[train_idx].mean(axis=0),
+            _std_floor(eq_all[train_idx].std(axis=0)),
+            eq_names,
+        )
+    if surrogate is not None:
+        model.attach_surrogate(surrogate, frozen=True)
+    if verbose:
+        print(f"arch={model.arch} n_eq={model.n_eq}", flush=True)
     R_t = torch.as_tensor(np.asarray(grid.R, dtype=np.float32))
     dR = float(grid.dR)
     dZ = float(grid.dZ)
@@ -661,6 +914,7 @@ def train_inverse(
     sig_t = torch.as_tensor(signals.astype(np.float32))
     aux_t = torch.as_tensor(aux_all)
     coil_t = None if coils_all is None else torch.as_tensor(coils_all)
+    eq_t = None if eq_all is None else torch.as_tensor(eq_all)
     noise_std_t = torch.as_tensor(noise_std)
 
     def _subset(index: np.ndarray):
@@ -684,12 +938,66 @@ def train_inverse(
         generator.manual_seed(int(seed) + 17)
         val_noise = torch.randn(val_pack[0].shape, generator=generator) * noise_std_t
 
-    opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    trainable = [param for param in model.parameters() if param.requires_grad]
+    opt = torch.optim.AdamW(trainable, lr=lr, weight_decay=weight_decay)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(int(epochs), 1))
-    loss_initial = _run_epoch_eval(
-        model, *train_pack, R_t, dR, dZ, aux_weight, physics_weight, outside_weight, batch_size
-    )
+    # Hybrid spends a short prefix on the parameter head alone, then turns on
+    # the frozen surrogate so the flux loss can move the identifiable parameters.
+    # Parameter regression is an MLP and is cheap. Give it a long prefix so the
+    # minor radius and profile exponents are fit before the surrogate flux loss,
+    # which otherwise spends its steps correcting a bad ``a``.
+    phase1 = min(40, max(0, int(epochs) - 10)) if model.arch == "hybrid" else 0
+    eq_train = None if eq_t is None else eq_t[torch.as_tensor(train_idx, dtype=torch.long)]
+    eq_val = None if eq_t is None else eq_t[torch.as_tensor(val_idx, dtype=torch.long)]
+
+    def _weights(epoch: int) -> tuple[float, float, float, float]:
+        use_psi = epoch >= phase1
+        psi_w = 1.0 if use_psi else 0.0
+        scale_w = float(scale_weight) if use_psi and model.arch == "direct" else 0.0
+        if model.n_eq == 0:
+            eq_w = 0.0
+        elif use_psi and model.arch == "hybrid":
+            eq_w = float(eq_weight)
+        elif use_psi:
+            eq_w = float(eq_weight)
+        else:
+            eq_w = 1.0
+        phys_w = float(physics_weight) if use_psi and model.arch == "direct" else 0.0
+        return psi_w, scale_w, eq_w, phys_w
+
+    def _score(pack, eq_rows, noise, epoch: int) -> float:
+        psi_w, scale_w, eq_w, phys_w = _weights(epoch)
+        model.skip_field = psi_w == 0.0
+        return _run_epoch_eval(
+            model,
+            *pack,
+            R_t,
+            dR,
+            dZ,
+            aux_weight,
+            phys_w,
+            outside_weight,
+            batch_size,
+            noise=noise,
+            eq=eq_rows,
+            eq_weight=eq_w,
+            scale_weight=scale_w,
+            psi_weight=psi_w,
+        )
+
+    loss_initial = _score(train_pack, eq_train, None, epoch=phase1)
     history = {"train_loss": [], "val_loss": [], "lr": []}
+    model.meta = {
+        "aux_names": aux_names,
+        "grid_R": np.asarray(grid.R, dtype=np.float64),
+        "grid_Z": np.asarray(grid.Z, dtype=np.float64),
+        "sensor": sensors.to_dict(),
+        "noise": float(noise),
+        "param_names": _param_names(data),
+        "coil_names": list(sensors.coil_names),
+        "arch": model.arch,
+        "eq_names": list(model.eq_names),
+    }
     best_val = float("inf")
     best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
     stall = 0
@@ -698,6 +1006,11 @@ def train_inverse(
     n_train = int(train_idx.size)
     order_gen = np.random.default_rng(int(seed))
     for epoch in range(int(epochs)):
+        if epoch == phase1:
+            best_val = float("inf")
+            stall = 0
+        psi_w, scale_w, eq_w, phys_w = _weights(epoch)
+        model.skip_field = psi_w == 0.0
         model.train()
         order = order_gen.permutation(n_train)
         for start in range(0, n_train, int(batch_size)):
@@ -707,6 +1020,7 @@ def train_inverse(
             if float(noise) > 0.0:
                 sig_b = sig_b + torch.randn_like(sig_b) * noise_std_t
             coil_b = None if train_pack[1] is None else train_pack[1][b]
+            eq_b = None if eq_train is None else eq_train[b]
             opt.zero_grad(set_to_none=True)
             loss, _parts = _batch_loss(
                 model,
@@ -721,52 +1035,40 @@ def train_inverse(
                 dR,
                 dZ,
                 aux_weight,
-                physics_weight,
+                phys_w,
                 outside_weight,
+                eq=eq_b,
+                eq_weight=eq_w,
+                scale_weight=scale_w,
+                psi_weight=psi_w,
             )
             loss.backward()
-            nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            nn.utils.clip_grad_norm_(trainable, 1.0)
             opt.step()
         sched.step()
         # Full-train evaluation dominates the step time on the 65x65 set. Use it
         # when the split is small (unit tests); otherwise score a fixed subset.
         if n_train <= 512:
-            train_loss = _run_epoch_eval(
-                model, *train_pack, R_t, dR, dZ, aux_weight, physics_weight, outside_weight, batch_size
-            )
+            train_loss = _score(train_pack, eq_train, None, epoch)
         else:
             monitor = np.random.default_rng(int(seed) + 91).choice(n_train, size=512, replace=False)
             mon = torch.as_tensor(np.sort(monitor), dtype=torch.long)
-            train_loss = _run_epoch_eval(
-                model,
-                train_pack[0][mon],
-                None if train_pack[1] is None else train_pack[1][mon],
-                train_pack[2][mon],
-                train_pack[3][mon],
-                train_pack[4][mon],
-                train_pack[5][mon],
-                train_pack[6][mon],
-                R_t,
-                dR,
-                dZ,
-                aux_weight,
-                physics_weight,
-                outside_weight,
-                batch_size,
+            train_loss = _score(
+                (
+                    train_pack[0][mon],
+                    None if train_pack[1] is None else train_pack[1][mon],
+                    train_pack[2][mon],
+                    train_pack[3][mon],
+                    train_pack[4][mon],
+                    train_pack[5][mon],
+                    train_pack[6][mon],
+                ),
+                None if eq_train is None else eq_train[mon],
+                None,
+                epoch,
             )
         if val_pack is not None:
-            val_loss = _run_epoch_eval(
-                model,
-                *val_pack,
-                R_t,
-                dR,
-                dZ,
-                aux_weight,
-                physics_weight,
-                outside_weight,
-                batch_size,
-                noise=val_noise,
-            )
+            val_loss = _score(val_pack, eq_val, val_noise, epoch)
         else:
             val_loss = train_loss
         history["train_loss"].append(train_loss)
@@ -778,6 +1080,12 @@ def train_inverse(
             best_val = val_loss
             best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
             stall = 0
+            if out_dir is not None and epoch >= phase1:
+                held = {key: value.detach().clone() for key, value in model.state_dict().items()}
+                model.load_state_dict(best_state)
+                model.skip_field = False
+                save_checkpoint(model, Path(out_dir) / "inverse.pt")
+                model.load_state_dict(held)
         else:
             stall += 1
         if verbose and (epoch < 3 or epoch % 5 == 0 or improved or stall == 1):
@@ -786,15 +1094,17 @@ def train_inverse(
                 f"best {best_val:.5f}",
                 flush=True,
             )
-        if val_pack is not None and stall >= int(patience):
+        if val_pack is not None and epoch >= phase1 and stall >= int(patience):
             if verbose:
                 print(f"early stop at epoch {epoch + 1}", flush=True)
             break
+    model.skip_field = False
     model.load_state_dict(best_state)
     model.eval()
     train_seconds = time.perf_counter() - t0
     metrics: dict = {
         "dataset": str(dataset_path),
+        "arch": model.arch,
         "geometry": geometry,
         "n_train": int(train_idx.size),
         "n_val": int(val_idx.size),
@@ -817,8 +1127,11 @@ def train_inverse(
         "hyperparameters": {
             "latent": int(latent),
             "hidden": int(hidden),
+            "arch": model.arch,
             "channels": int(channels),
             "decoder_base": int(base),
+            "eq_weight": float(eq_weight),
+            "scale_weight": float(scale_weight),
             "lr": float(lr),
             "weight_decay": float(weight_decay),
             "batch_size": int(batch_size),
@@ -849,7 +1162,25 @@ def train_inverse(
         "noise": float(noise),
         "param_names": _param_names(data),
         "coil_names": list(sensors.coil_names),
+        "arch": model.arch,
+        "eq_names": list(model.eq_names),
     }
+    model.skip_field = False
+    metrics.update(
+        _fit_report(
+            model,
+            data,
+            signals,
+            eq_all,
+            eq_names,
+            train_idx,
+            val_idx,
+            test_idx,
+            float(noise),
+            rms,
+            int(seed),
+        )
+    )
     if out_dir is not None:
         out = Path(out_dir)
         out.mkdir(parents=True, exist_ok=True)
@@ -873,6 +1204,52 @@ def train_inverse(
     if out_dir is not None:
         _write_metrics(Path(out_dir) / "metrics.json", metrics)
     return model, metrics
+
+
+def _fit_report(
+    model: InverseNet,
+    data: dict,
+    signals: np.ndarray,
+    eq_all: np.ndarray | None,
+    eq_names: list[str],
+    train_idx: np.ndarray,
+    val_idx: np.ndarray,
+    test_idx: np.ndarray,
+    noise: float,
+    rms: np.ndarray,
+    seed: int,
+) -> dict:
+    """Train/val flux error and per-parameter R^2. Caps the flux sample count."""
+    model.eval()
+    model.skip_field = False
+
+    def _rel(index: np.ndarray) -> float:
+        if index.size == 0:
+            return float("nan")
+        take = index if index.size <= 400 else index[:400]
+        pred = _predict_numpy(model, signals[take], _coil_matrix(data, take))
+        psi = np.asarray(data["psi"], dtype=float)[take]
+        mask = np.asarray(data["mask"])[take]
+        return _mean_finite([relative_l2(pred[i], psi[i], mask[i]) for i in range(take.size)])
+
+    report: dict = {"train_rel_l2": _rel(train_idx), "val_rel_l2": _rel(val_idx)}
+    if eq_all is None or model.eq_head is None or test_idx.size == 0:
+        return report
+
+    def _eq_hat(index: np.ndarray, noisy: bool) -> np.ndarray:
+        sig = np.asarray(signals[index], dtype=np.float32)
+        if noisy and noise > 0.0:
+            unit = np.random.default_rng(seed + 11).normal(size=sig.shape)
+            sig = sig + np.float32(noise) * np.asarray(rms, dtype=np.float32) * unit.astype(np.float32)
+        coils = _coil_matrix(data, index)
+        coil_t = None if coils is None else torch.as_tensor(np.asarray(coils, dtype=np.float32))
+        with torch.inference_mode():
+            hat = model.equilibrium_params(torch.as_tensor(sig), coil_t)
+        return hat.detach().cpu().numpy()
+
+    report["param_r2"] = _r2_columns(_eq_hat(test_idx, True), eq_all[test_idx], eq_names)
+    report["param_r2_clean"] = _r2_columns(_eq_hat(test_idx, False), eq_all[test_idx], eq_names)
+    return report
 
 
 def _evaluate_splits(
@@ -1137,6 +1514,11 @@ def save_checkpoint(model: InverseNet, path: Path) -> None:
             "noise": float(meta.get("noise", 0.0)),
             "param_names": list(meta.get("param_names", [])),
             "coil_names": list(meta.get("coil_names", [])),
+            "arch": model.arch,
+            "n_eq": int(model.n_eq),
+            "eq_names": list(getattr(model, "eq_names", [])),
+            "surrogate_config": None if model.surrogate is None else dict(model.surrogate.config),
+            "surrogate_frozen": bool(model.surrogate_frozen),
         },
         path,
     )
@@ -1145,6 +1527,8 @@ def save_checkpoint(model: InverseNet, path: Path) -> None:
 def load_inverse(path) -> InverseNet:
     """Load a checkpoint written by ``train_inverse`` / ``save_checkpoint``."""
     ckpt = torch.load(path, map_location="cpu", weights_only=False)
+    arch = str(ckpt.get("arch", "direct"))
+    n_eq = int(ckpt.get("n_eq", 0))
     model = InverseNet(
         n_sensors=int(ckpt["n_sensors"]),
         nr=int(ckpt["nr"]),
@@ -1154,9 +1538,20 @@ def load_inverse(path) -> InverseNet:
         latent=int(ckpt["latent"]),
         hidden=int(ckpt["hidden"]),
         channels=int(ckpt.get("channels", 32)),
-        base=int(ckpt.get("base", 16)),
+        base=int(ckpt.get("base", 8)),
+        arch=arch,
+        n_eq=n_eq,
     )
+    if arch == "hybrid" and ckpt.get("surrogate_config"):
+        from models.surrogate import TrainedSurrogate
+
+        model.attach_surrogate(
+            TrainedSurrogate(ckpt["surrogate_config"]),
+            frozen=bool(ckpt.get("surrogate_frozen", True)),
+        )
     model.load_state_dict(ckpt["state_dict"])
+    model.eq_names = [str(x) for x in ckpt.get("eq_names", [])]
+    model.skip_field = False
     model.meta = {
         "aux_names": list(ckpt.get("aux_names", [])),
         "grid_R": np.asarray(ckpt.get("grid_R", []), dtype=np.float64),
@@ -1211,9 +1606,12 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--lr", type=float, default=3e-3)
     parser.add_argument("--patience", type=int, default=12)
     parser.add_argument("--physics-weight", type=float, default=0.05)
-    parser.add_argument("--threads", type=int, default=1)
+    parser.add_argument("--threads", type=int, default=2)
+    parser.add_argument("--arch", default="auto", choices=["auto", "direct", "hybrid"])
+    parser.add_argument("--surrogate", default=None, help="frozen params->psi checkpoint for --arch hybrid")
     parser.add_argument("--ood", default=None, help="optional OOD npz; default is a sibling *_ood.npz")
     parser.add_argument("--freegs", default=None, help="optional FreeGS npz; trains a second model")
+    parser.add_argument("--skip-freegs", action="store_true")
     args = parser.parse_args(argv)
     data_path = Path(args.data)
     ood = Path(args.ood) if args.ood else _default_ood(data_path)
@@ -1228,24 +1626,27 @@ def main(argv: list[str] | None = None) -> None:
         lr=args.lr,
         patience=args.patience,
         physics_weight=args.physics_weight,
-        num_threads=args.threads,
+        num_threads=max(1, min(int(args.threads), 2)),
         ood_path=ood,
         evaluate=True,
         verbose=True,
+        arch=args.arch,
+        surrogate_path=args.surrogate,
     )
-    if freegs is not None and freegs.is_file():
+    if freegs is not None and freegs.is_file() and not args.skip_freegs:
         print(f"training a second model on {freegs}", flush=True)
         _free_model, free_metrics = train_inverse(
             freegs,
             noise=args.noise,
-            epochs=args.epochs,
+            epochs=min(int(args.epochs), 40),
             seed=args.seed,
             out_dir=str(Path(args.out) / "freegs"),
             batch_size=args.batch_size,
             lr=args.lr,
             patience=args.patience,
             physics_weight=args.physics_weight,
-            num_threads=args.threads,
+            num_threads=max(1, min(int(args.threads), 2)),
+            arch="direct",
             ood_path=None,
             evaluate=True,
             verbose=True,
