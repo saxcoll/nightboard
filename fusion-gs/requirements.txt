@@ -3,6 +3,7 @@ scipy>=1.11
 matplotlib>=3.8
 h5py>=3.10
 torch>=2.2
-freegs>=0.8
+# FreeGS 0.8.2 on PyPI fails with NumPy 2.x; the upstream main branch works.
+freegs @ git+https://github.com/freegs-plasma/freegs.git
 pytest>=8.0
 nbformat>=5.9
