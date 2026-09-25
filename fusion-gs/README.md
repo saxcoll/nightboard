@@ -103,6 +103,24 @@ This loads the checkpoints already on disk, writes figures and `outputs/compare/
 jupyter nbconvert --to notebook --execute --inplace notebooks/comparison.ipynb --ExecutePreprocessor.timeout=900
 ```
 
+### Visualization
+
+```bash
+python -m eval.visualize --out outputs/visualize
+```
+
+Writes figures for one fixed-boundary equilibrium and for the saved models. Optional flags `--R0 --a --kappa --delta --Ip --beta0 --alpha --gamma --B0 --grid-n` override the default case (R0 = 1.7 m, a = 0.6 m, κ = 1.7, δ = 0.3, Ip = 1 MA, β0 = 0.5, α = 1, γ = 2, B0 = 2 T, 129×129).
+
+| file | contents |
+| --- | --- |
+| `equilibrium.png` | ψ_n with labelled flux surfaces and the LCFS, J_φ, pressure / F / q(ψ_n), and the scalar summary (q95, Shafranov shift, β_p, iterations) |
+| `surrogate_vs_solver.png` | `mlpcnn_pw0p1` against the solver on the training grid R ∈ [0.80, 2.76], Z ∈ [−1.90, 1.90], 65×65. Solid contours are the solver, dashed are the network; the second panel is \|Δψ\| / ψ_axis |
+| `pinn_vs_solver.png` | nonlinear PINN against the solver for shape (1.7, 0.6, 1.7, 0.3) and profiles (Ip = 1 MA, β0 = 0.5, α = 1, γ = 2, B0 = 2 T) |
+| `kappa_sweep.gif` | flux surfaces as κ runs from 1.2 to 2.0, solver solid and the surrogate dashed |
+| `delta_sweep.gif` | the same scan in triangularity, δ from 0 to 0.5 |
+
+A missing checkpoint is skipped. The sweeps use the command-line shape and profiles as the fixed parameters.
+
 ### Tests
 
 ```bash
