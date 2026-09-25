@@ -1,5 +1,7 @@
 # fusion-gs
 
+Teaching notes on the physics and the results: [docs/REPORT.md](docs/REPORT.md).
+
 Machine-learning models for tokamak plasma equilibria. The target is the Grad–Shafranov equation: a fixed-boundary finite-difference solver, physics-informed networks, supervised surrogates from equilibrium parameters to poloidal flux, and an inverse map from synthetic magnetic diagnostics.
 
 Fast equilibria matter because shape control and between-shot reconstruction call the same solve many times. A 65×65 nonlinear solve here takes 44 ms on CPU. A trained network evaluates one equilibrium in about 1–3 ms, and a batch of 500 in 273 ms.
