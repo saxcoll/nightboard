@@ -1,6 +1,7 @@
 # fusion-gs
 
 Teaching notes on the physics and the results: [docs/REPORT.md](docs/REPORT.md).
+Typeset PDF of the same notes: [docs/REPORT.pdf](docs/REPORT.pdf).
 
 Machine-learning models for tokamak plasma equilibria. The target is the Grad–Shafranov equation: a fixed-boundary finite-difference solver, physics-informed networks, supervised surrogates from equilibrium parameters to poloidal flux, and an inverse map from synthetic magnetic diagnostics.
 
