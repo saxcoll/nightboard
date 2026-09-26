@@ -21,7 +21,7 @@ The opening brief is ten hours, fiction or nonfiction, with Descartes, Hume, and
 ## The sitting
 
 1. Each member names the book their rule wants, including a book the hours cannot finish.
-2. The Chair strikes those and the member stands for their best book that fits. A book may stand when it finishes inside the brief plus a tenth. Hours are rounded to a tenth, the same way the minutes print them.
+2. The Chair strikes a book the hours cannot finish, and, when the shelf can meet every word of the theme, a book that misses the theme. The member then stands for their best book that survives both. A book may stand when it finishes inside the brief plus a tenth. Hours are rounded to a tenth, the same way the minutes print them.
 3. Pace is 55 pages an hour, minus 8 pages for each step of difficulty from 1 to 5. Kant is short and slow. A long novel at difficulty 2 is faster.
 4. Each member objects to the standing nomination they rank worst. If a nomination drew no objection, the Chair calls on the member who ranks it lowest.
 5. The nominator replies to the sharpest objection.

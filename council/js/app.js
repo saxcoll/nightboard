@@ -91,7 +91,7 @@ function renderShelf() {
   modeHint.textContent =
     state.mode === "shortlist"
       ? "The council may nominate only from the shortlist, skipping anything marked lately read."
-      : "The council may nominate any book not marked lately read. A theme steers the scores. It does not empty the shelf.";
+      : "The council may nominate any book not marked lately read. If the shelf can answer every word of the theme, the Chair strikes a nomination that misses it.";
 }
 
 function bookRow(book) {
@@ -162,6 +162,16 @@ function citeText(text) {
   return fragment;
 }
 
+function strikeLabel(nomination) {
+  if (nomination.strikeReason === "theme") {
+    return `First named ${nomination.ideal.title}. Struck: it does not answer the theme.`;
+  }
+  if (nomination.strikeReason === "both") {
+    return `First named ${nomination.ideal.title}. Struck: it misses the theme and the hours.`;
+  }
+  return `First named ${nomination.ideal.title}. Struck: it does not fit the hours.`;
+}
+
 function paragraph(className, text) {
   const node = document.createElement("p");
   node.className = className;
@@ -228,7 +238,7 @@ function renderMinutes(session) {
     if (nomination.struck) {
       const struck = document.createElement("p");
       struck.className = "struck";
-      struck.textContent = `First named ${nomination.ideal.title}. Struck: it does not fit the hours.`;
+      struck.textContent = strikeLabel(nomination);
       minutes.append(struck);
     }
     minutes.append(paragraph("speech", nomination.speech));

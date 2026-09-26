@@ -1,6 +1,7 @@
 import { BOOKS } from "./catalog.js";
 import { CHAIR, MEMBERS, memberById } from "./members.js";
 import {
+  answersTheme,
   buildContext,
   compareBooks,
   eligibleBooks,
@@ -100,7 +101,12 @@ export function convene({ books = BOOKS, reader } = {}) {
   const pool = eligibleBooks(books, safeReader);
   const tokens = tokenize(safeReader.theme);
   const themeMiss = tokens.length > 0 && pool.every((book) => themeBoost(book, safeReader.theme) === 0);
-  const anyFit = pool.some((book) => fitsIn(book, safeReader));
+  const themeConstrained = pool.some((book) => answersTheme(book, safeReader.theme) && tokenize(safeReader.theme).length > 0);
+  const standable = (book) => {
+    if (themeConstrained && !answersTheme(book, safeReader.theme)) return false;
+    return fitsIn(book, safeReader);
+  };
+  const anyFit = pool.some((book) => standable(book));
 
   if (!pool.length || safeReader.hours <= 0) {
     const session = {
@@ -135,14 +141,21 @@ export function convene({ books = BOOKS, reader } = {}) {
   const nominations = MEMBERS.map((member) => {
     const ranked = rankBooks(member.id, pool, safeReader, context);
     const ideal = ranked[0];
-    const fitting = ranked.filter((book) => fitsIn(book, safeReader));
-    const standing = anyFit ? fitting[0] : ideal;
+    const fitting = ranked.filter((book) => standable(book));
+    const themed = themeConstrained ? ranked.filter((book) => answersTheme(book, safeReader.theme)) : ranked;
+    const standing = anyFit ? fitting[0] : themed[0] || ideal;
     const nomination = {
       memberId: member.id,
       ideal,
       standing,
       struck: ideal.id !== standing.id,
+      strikeReason: null,
     };
+    if (nomination.struck) {
+      const missedHours = !fitsIn(ideal, safeReader);
+      const missedTheme = themeConstrained && !answersTheme(ideal, safeReader.theme);
+      nomination.strikeReason = missedHours && missedTheme ? "both" : missedTheme ? "theme" : "hours";
+    }
     nomination.speech = nominationSpeech(nomination, safeReader, context);
     return nomination;
   });
@@ -330,9 +343,13 @@ function resolutionParagraph(session) {
     for (const book of strikes) {
       if (seen.has(book.id)) continue;
       seen.add(book.id);
-      unique.push(book);
+      const reason = session.nominations.find((nomination) => nomination.ideal.id === book.id)?.strikeReason;
+      unique.push({ book, reason });
     }
-    sentences.push(`The Chair struck ${listTitles(unique)} for exceeding the brief.`);
+    const hoursStruck = unique.filter((entry) => entry.reason === "hours" || entry.reason === "both").map((entry) => entry.book);
+    const themeStruck = unique.filter((entry) => entry.reason === "theme").map((entry) => entry.book);
+    if (hoursStruck.length) sentences.push(`The Chair struck ${listTitles(hoursStruck)} for exceeding the hours.`);
+    if (themeStruck.length) sentences.push(`The Chair struck ${listTitles(themeStruck)} for missing the theme.`);
   }
   if (themeMiss) {
     sentences.push("The theme met no book on the eligible shelf. The council used the hours, the kind, and what has just been read.");

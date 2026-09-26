@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { BOOKS } from "../js/catalog.js";
+import { answersTheme } from "../js/score.js";
 import { borda, briefFromParams, convene, DEFAULT_READER, fitsIn, hoursFor } from "../js/convene.js";
 
 test("the shelf is internally consistent", () => {
@@ -132,6 +133,18 @@ test("a shared link restores the brief", () => {
   assert.deepEqual(reader.recent, ["gilead"]);
   assert.equal(mode, "shortlist");
   assert.deepEqual(reader.shortlist, ["the-stranger", "mrs-dalloway"]);
+});
+
+test("a history of science request is answered by a history of science", () => {
+  const reader = { hours: 30, kind: "nonfiction", theme: "history of science", recent: [], shortlist: [] };
+  const session = convene({ reader });
+  const onTheme = new Set(["structure", "sapiens", "atomic-bomb"]);
+  assert.ok(onTheme.has(session.winner.id), session.winner.title);
+  for (const nomination of session.nominations) {
+    assert.ok(onTheme.has(nomination.standing.id), nomination.standing.title);
+    assert.equal(answersTheme(nomination.standing, reader.theme), true);
+  }
+  assert.notEqual(session.winner.id, "the-fire-next-time");
 });
 
 test("three hours cannot resolve to Middlemarch", () => {

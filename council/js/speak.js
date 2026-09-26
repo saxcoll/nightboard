@@ -14,13 +14,24 @@ function paceClause(book) {
   return `about ${formatHours(hoursFor(book))} hours at this shelf's pace`;
 }
 
+function strikeClause(nomination, reader) {
+  if (!nomination.struck) return "";
+  const ideal = nomination.ideal;
+  const named = `I first named ${ideal.title} (${ideal.author}, ${yearLabel(ideal.year)}).`;
+  if (nomination.strikeReason === "theme") {
+    return `${named} It does not answer the brief, which was ${reader.theme}. The Chair strikes it. `;
+  }
+  if (nomination.strikeReason === "both") {
+    return `${named} It asks ${paceClause(ideal)}, past a brief of ${formatHours(reader.hours)} hours, and it does not answer ${reader.theme}. The Chair strikes it. `;
+  }
+  return `${named} It asks ${paceClause(ideal)}, and the brief allows ${formatHours(reader.hours)}. The Chair strikes it. `;
+}
+
 export function nominationSpeech(nomination, reader, context) {
   const member = memberById(nomination.memberId);
   const book = nomination.standing;
   const ideal = nomination.ideal;
-  const strike = nomination.struck
-    ? `I first named ${ideal.title} (${ideal.author}, ${yearLabel(ideal.year)}). It asks ${paceClause(ideal)}, and the brief allows ${formatHours(reader.hours)}. The Chair strikes it. `
-    : "";
+  const strike = strikeClause(nomination, reader);
 
   if (member.id === "canon") {
     const downstream = context.dependents.get(book.id) || [];

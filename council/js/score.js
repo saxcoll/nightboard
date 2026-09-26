@@ -45,13 +45,27 @@ export function tokenize(theme) {
     .filter((token) => token.length > 2 && !STOP.has(token));
 }
 
-export function themeBoost(book, theme) {
+function themeHaystack(book) {
+  return [book.title, book.author, book.blurb, ...book.subjects, ...book.keywords].join(" ").toLowerCase();
+}
+
+export function themeHits(book, theme) {
   const tokens = tokenize(theme);
-  if (!tokens.length) return 0;
-  const haystack = [book.title, book.author, book.blurb, ...book.subjects, ...book.keywords]
-    .join(" ")
-    .toLowerCase();
+  if (!tokens.length) return { tokens, hits: 0 };
+  const haystack = themeHaystack(book);
   const hits = tokens.filter((token) => haystack.includes(token)).length;
+  return { tokens, hits };
+}
+
+export function answersTheme(book, theme) {
+  const { tokens, hits } = themeHits(book, theme);
+  if (!tokens.length) return true;
+  return hits === tokens.length;
+}
+
+export function themeBoost(book, theme) {
+  const { tokens, hits } = themeHits(book, theme);
+  if (!tokens.length) return 0;
   return (hits / tokens.length) * 3;
 }
 
@@ -131,7 +145,7 @@ export function scoreBook(memberId, book, reader, context) {
       book.influence * 1.1 + book.pleasures + book.finishability * 0.5 - (book.hype || 0) * 0.4;
     if (!fitsIn(book, reader)) return roundScore(-20 + value / Math.max(hours, 0.5));
     const utilization = hours / reader.hours;
-    return roundScore(value - 2.8 * Math.abs(utilization - 0.65) + theme * 0.5);
+    return roundScore(value - 2.8 * Math.abs(utilization - 0.65) + theme * 1.2);
   }
   if (memberId === "doubt") {
     let total = book.influence * 0.8 + book.pleasures + book.finishability * 0.3 + theme * 1.3;
