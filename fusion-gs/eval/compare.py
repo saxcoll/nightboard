@@ -1253,12 +1253,12 @@ def build_notebook(path: str | Path | None = None) -> Path:
 Axisymmetric tokamak equilibrium is the Grad-Shafranov problem. In cylindrical coordinates the poloidal flux $\\psi(R, Z)$ satisfies
 
 $$
-\\Delta^*\\psi \\equiv R\\partial_R\\!\\left(\\frac{1}{R}\\partial_R\\psi\\right) + \\partial_Z^2\\psi = -\\mu_0 R J_\\phi,
+\\Delta^*\\psi \\equiv R\\partial_R\\negthinspace{}\\left(\\frac{1}{R}\\partial_R\\psi\\right) + \\partial_Z^2\\psi = -\\mu_0 R J_\\phi,
 $$
 
 with $J_\\phi$ set by the pressure and toroidal-field profiles, which themselves depend on $\\psi$. The fixed-boundary problem takes the plasma shape and those profiles and returns $\\psi$. The free-boundary problem, and equilibrium reconstruction, also have to place the boundary so that the external magnetic measurements are matched.
 
-A nonlinear finite-difference solve is accurate and, on a $65\\times 65$ mesh, only a few tens of milliseconds. Real-time shape control and between-shot reconstruction still want a map that is cheaper than a fresh solve, and a reconstruction map that goes straight from diagnostics to $\\psi$. This notebook compares four approaches that share one set of conventions ($\\psi = 0$ on the boundary, $\\psi_\\mathrm{axis} > 0$ for the solver family, arrays shaped `(nr, nz)` with `indexing="ij"`, SI units):
+A nonlinear finite-difference solve is accurate and, on a $65\\times 65$ mesh, only a few tens of milliseconds. Real-time shape control and between-shot reconstruction still want a map that is cheaper than a fresh solve, and a reconstruction map that goes straight from diagnostics to $\\psi$. This notebook compares four approaches that share one set of conventions ($\\psi = 0$ on the boundary, $\\psi_\\mathrm{axis} \\gt 0$ for the solver family, arrays shaped `(nr, nz)` with `indexing="ij"`, SI units):
 
 1. A second-order finite-difference solver, checked against a Cerfon–Freidberg Solov'ev equilibrium.
 2. Physics-informed networks trained on the strong form, with no interior flux target.
@@ -1304,7 +1304,7 @@ def show(result):
         new_markdown_cell(
             """## Finite-difference verification
 
-The Solov'ev equilibrium used here is the up-down symmetric Cerfon–Freidberg solution with $\\epsilon = 0.32$, $\\kappa = 1.7$, $\\delta = 0.33$, $A = -0.155$, and $R_0 = 1\\,\\mathrm{m}$. The analytic flux is negative inside the plasma. The finite-difference code solves $\\Delta^*\\psi = $ that analytic right-hand side with $\\psi = 0$ on the curved boundary (Shortley–Weller cuts). On a smooth solution the truncation error is $O(h^2)$, so the relative L2 should fall with slope 2 on a log-log plot against the mesh spacing."""
+The Solov'ev equilibrium used here is the up-down symmetric Cerfon–Freidberg solution with $\\epsilon = 0.32$, $\\kappa = 1.7$, $\\delta = 0.33$, $A = -0.155$, and $R_0 = 1\\thinspace{}\\mathrm{m}$. The analytic flux is negative inside the plasma. The finite-difference code solves $\\Delta^*\\psi =$ that analytic right-hand side with $\\psi = 0$ on the curved boundary (Shortley–Weller cuts). On a smooth solution the truncation error is $O(h^2)$, so the relative L2 should fall with slope 2 on a log-log plot against the mesh spacing."""
         ),
         new_code_cell(
             """solver = compare.solver_verification()
