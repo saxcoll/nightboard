@@ -1,0 +1,12 @@
+[project]
+name = "fusion-gs"
+version = "0.1.0"
+description = "Machine learning models for tokamak plasma equilibria (Grad-Shafranov equation)"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "slow: long-running training tests (deselect with -m 'not slow')",
+]
