@@ -27,3 +27,5 @@ Demo data is seeded for **Cursor Calgary Meetup — August** at ZayZoon. Swap `j
 
 Looking for lecture-grade technical YouTube? Check out [Lectern](./lectern/), a curated library of high-signal mathematical and academic expositions.
 
+Choosing what to read next? [The Reading Council](./council/) is five members with fixed rules who debate a shelf of fiction and nonfiction, strike what the hours cannot finish, and publish the dissent.
+
