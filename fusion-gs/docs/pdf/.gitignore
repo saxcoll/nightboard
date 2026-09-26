@@ -1,0 +1,15 @@
+# LaTeX aux files. The source .tex and generated figure assets are tracked.
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.lof
+*.lot
+*.xdv
+# The built PDF is copied to ../REPORT.pdf, which is the tracked copy.
+fusion_gs_report.pdf
