@@ -138,13 +138,28 @@ test("a shared link restores the brief", () => {
 test("a history of science request is answered by a history of science", () => {
   const reader = { hours: 30, kind: "nonfiction", theme: "history of science", recent: [], shortlist: [] };
   const session = convene({ reader });
-  const onTheme = new Set(["structure", "sapiens", "atomic-bomb"]);
-  assert.ok(onTheme.has(session.winner.id), session.winner.title);
+  assert.equal(answersTheme(session.winner, reader.theme), true);
   for (const nomination of session.nominations) {
-    assert.ok(onTheme.has(nomination.standing.id), nomination.standing.title);
     assert.equal(answersTheme(nomination.standing, reader.theme), true);
   }
   assert.notEqual(session.winner.id, "the-fire-next-time");
+});
+
+test("after Rhodes and Kuhn, a long history of science is chosen over Sapiens", () => {
+  const reader = {
+    hours: 60,
+    kind: "nonfiction",
+    theme: "history of science",
+    recent: ["atomic-bomb", "structure"],
+    shortlist: [],
+  };
+  const session = convene({ reader });
+  assert.notEqual(session.winner.id, "sapiens");
+  assert.equal(answersTheme(session.winner, reader.theme), true);
+  assert.ok(session.winner.pages >= 500, session.winner.title);
+  for (const nomination of session.nominations) {
+    assert.notEqual(nomination.standing.id, "sapiens");
+  }
 });
 
 test("three hours cannot resolve to Middlemarch", () => {
