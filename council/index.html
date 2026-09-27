@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Reading Council</title>
+    <meta
+      name="description"
+      content="Five members debate a shelf of fiction and nonfiction and vote on what to read next. The Chair keeps the minutes."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <header class="mast">
+      <p class="kicker">Five members, one chair, one brief</p>
+      <h1>The Reading Council</h1>
+      <p class="lede">
+        A shelf of fiction and nonfiction. Each member nominates by a written rule. The Chair strikes any book the hours cannot finish, counts the vote, and enters the dissent.
+      </p>
+    </header>
+
+    <main class="layout">
+      <form id="brief" class="brief">
+        <div class="field-row">
+          <label class="field">
+            <span>Hours</span>
+            <input id="hours" name="hours" type="number" min="1" max="400" step="1" value="10" required />
+          </label>
+          <fieldset class="field kind-field">
+            <legend>Kind</legend>
+            <div class="segmented" role="radiogroup" aria-label="Kind of book">
+              <label><input type="radio" name="kind" value="either" checked /> Either</label>
+              <label><input type="radio" name="kind" value="fiction" /> Fiction</label>
+              <label><input type="radio" name="kind" value="nonfiction" /> Nonfiction</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <label class="field">
+          <span>Theme</span>
+          <input id="theme" name="theme" type="text" placeholder="mortality, justice, a city, the self" autocomplete="off" />
+        </label>
+
+        <div class="segmented mode" role="radiogroup" aria-label="How the shelf is used">
+          <label><input type="radio" name="mode" value="shelf" checked /> Open shelf</label>
+          <label><input type="radio" name="mode" value="shortlist" /> Shortlist</label>
+        </div>
+        <p class="hint" id="mode-hint"></p>
+
+        <label class="field">
+          <span>Find a book</span>
+          <input id="filter" type="search" placeholder="Title, author, or subject" autocomplete="off" />
+        </label>
+
+        <p class="shelf-meta" id="shelf-meta"></p>
+        <div id="shelf" class="shelf"></div>
+
+        <button type="submit" class="convene">Convene</button>
+        <details class="rules">
+          <summary>The rules</summary>
+          <dl id="rules-list"></dl>
+        </details>
+      </form>
+
+      <article id="minutes" class="minutes" aria-live="polite"></article>
+    </main>
+
+    <footer class="colophon">
+      <p>Page counts are round paperback lengths. The pace and the scores belong to this council, so a disagreement can be checked.</p>
+      <p><a href="../">Nightboard</a> · <a href="../lectern/">Lectern</a></p>
+    </footer>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
